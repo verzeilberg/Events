@@ -1,0 +1,59 @@
+<?php
+$this->headTitle('Add Event');
+$this->mainMenu()->setActiveItemId('eventbeheer');
+$this->pageBreadcrumbs()->setItems([
+    'Beheer' => $this->url('beheer'),
+    'Events' => $this->url('beheer/event'),
+    'Edit Event' => $this->url('beheer/event', ['action' => 'add'])
+]);
+$form->setAttributes(array(
+    'class' => 'form-horizontal',
+    'enctype' => 'multipart/form-data'
+));
+?>
+<hgroup id="headAdminTitle" class="col-sm-12 col-md-12 col-lg-12">
+    <h1 id="index">EDIT EVENT</h1>
+</hgroup>
+<!-- Breadcrumbs -->
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <?= $this->pageBreadcrumbs()->render(); ?>
+</div>
+<?php echo $this->form()->openTag($form); ?>
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <?php
+    echo $this->partial('event/partial/form.phtml');
+    ?>
+</div>
+<?php
+if (empty($image)) {
+    echo $this->partial('upload-images/partial/upload_image.phtml', array('formImage' => $formEventImage));
+} else {
+    ?>
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <hr/>
+            <div id="image<?php echo $image->getImageId(); ?>">
+                <?php echo '<img class="img-thumbnail img-responsive " src="/' . $image->getImageTypes('400x200')[0]->getFolder() . $image->getImageTypes('400x200')[0]->getFileName() . '" alt="' . $image->getAlt() . '"/>'; ?>
+                <div class="imageOptions">
+                    <span data-imageid="<?php echo $image->getImageId(); ?>" class="btn btn-primary btn-sm editImage glyphicon glyphicon-pencil" aria-hidden="true" data-dismiss="modal" data-target="#showImages"></span>
+                    <span data-imageid="<?php echo $image->getImageId(); ?>" class="btn btn-primary btn-sm deleteImageObject glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <span data-imageid="<?php echo $image->getImageId(); ?>" class="btn btn-primary btn-sm recropImage"><i class="fa fa-crop" aria-hidden="true"></i></span>
+                    <span data-id="<?php echo $returnURL['id'] ?>" data-route="<?php echo $returnURL['route'] ?>" data-action="<?php echo $returnURL['action'] ?>"  data-imageid="<?php echo $image->getImageId(); ?>" class="rotateImage"><i class="fa fa-undo" aria-hidden="true"></i></span>
+                </div>
+            </div>
+            <hr/>
+        </div>
+    </div>
+    <?php
+}
+?>
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <button type="submit" id="submit" class="btn btn-primary">Opslaan</button> 
+        <a href="<?php echo $this->url('beheer/event', ['action' => 'index']); ?>" class="btn btn-default" title="Annuleren">Annuleren</a>
+    </div> 
+</div>
+<?php echo $this->form()->closeTag($form); ?>
+
+<!-- Edit afbeelding -->
+<?php echo $this->partial('upload-images/partial/edit_image.phtml'); ?>
