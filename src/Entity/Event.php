@@ -89,6 +89,16 @@ class Event extends UnityOfWork {
     protected $labelText;
 
     /**
+     * @ORM\Column(name="text", type="text", nullable=true)
+     * @Annotation\Options({
+     * "label": "Text",
+     * "label_attributes": {"class": "col-sm-1 col-md-1 col-lg-1 control-label"}
+     * })
+     * @Annotation\Attributes({"class":"form-control", "id":"editor"})
+     */
+    protected $text;
+
+    /**
      * Many Categories have One Event.
      * @ORM\ManyToOne(targetEntity="EventCategory", inversedBy="events")
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
@@ -168,13 +178,21 @@ class Event extends UnityOfWork {
     function setLabelText($labelText) {
         $this->labelText = $labelText;
     }
-    
+
     function getCategory() {
         return $this->category;
     }
 
     function setCategory($category) {
         $this->category = $category;
+    }
+    
+    function getText() {
+        return $this->text;
+    }
+
+    function setText($text) {
+        $this->text = $text;
     }
 
 
