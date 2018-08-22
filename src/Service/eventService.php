@@ -49,7 +49,7 @@ class eventService implements eventServiceInterface {
             foreach ($events AS $event) {
                 if (!empty($event->getLatitude()) && !empty($event->getLongitude())) {
                     //Set icon
-                    $icon = '/img/icons/google-maps/run.svg';
+                    $icon = '/img/icons/google-maps/bullseye.svg';
                     if (is_object($event->getCategory()) && is_object($event->getCategory()->getFile())) {
                         $icon = $event->getCategory()->getFile()->getPath();
                     }
@@ -128,9 +128,7 @@ class eventService implements eventServiceInterface {
      *
      */
     public function getEventsByYearAndCategory($year = null, $catgory = null) {
-        
-        var_dump($catgory); 
-        
+
         if ($year != null) {
             $beginYear = new \DateTime("$year-1-1 00:00:00");
             $endYear = new \DateTime("$year-12-31 23:59:59");
@@ -156,6 +154,25 @@ class eventService implements eventServiceInterface {
         } else {
             return null;
         }
+    }
+
+    /**
+     *
+     * Get array of startdates grouped by year
+     *
+     * @return      array
+     *
+     */
+    public function getYearsOfEvents() {
+        $qb = $this->entityManager->getRepository('Event\Entity\Event')
+                ->createQueryBuilder('e')
+                ->select('YEAR(e.eventStartDate) AS eYear')
+                ->where('e.deleted = 0')
+                ->groupBy('eYear');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
     }
 
     /**

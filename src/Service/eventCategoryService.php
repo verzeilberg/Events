@@ -44,7 +44,7 @@ class eventCategoryService implements eventCategoryServiceInterface {
                     $location[] = $event->getLabelText();
                     $location[] = $event->getLatitude();
                     $location[] = $event->getLongitude();
-                    $location[] = '/img/icons/google-maps/run.svg';
+                    $location[] = '/img/icons/google-maps/bullseye.svg';
                     $locations[] = $location;
                 }
             }
