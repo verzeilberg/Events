@@ -18,7 +18,7 @@ $(document).ready(function () {
                     $('h5#eventTitle').text(data.event.title);
                     $('div#startDate').html('<i class="fas fa-calendar-alt"></i> ' + data.event.eventStartDate);
                     $('div#endDate').html('<i class="far fa-calendar-alt"></i> ' + data.event.eventEndDate);
-                    $('div#mainText').text(data.event.text);
+                    $('div#mainText').html(data.event.text);
                     $('div#eventCategory').html('<img src="'+data.event.categoryImage+'" alt="'+data.event.category+'" height="80" />');
                     $('div#eventBackground').css('background-image', 'url(' + data.event.eventImage + ')');
                     $('#eventModal').modal('toggle')

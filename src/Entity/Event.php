@@ -92,9 +92,9 @@ class Event extends UnityOfWork {
      * @ORM\Column(name="text", type="text", nullable=true)
      * @Annotation\Options({
      * "label": "Text",
-     * "label_attributes": {"class": "col-sm-1 col-md-1 col-lg-1 control-label"}
+     * "label_attributes": {"class": "control-label"}
      * })
-     * @Annotation\Attributes({"class":"form-control", "id":"editor"})
+     * @Annotation\Attributes({"class":"form-control", "id":"editor2"})
      */
     protected $text;
 

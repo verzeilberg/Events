@@ -82,3 +82,10 @@ echo $this->partial('event/partial/google_maps.phtml');
     </div>
 </div>
 <!-- End google maps -->
+
+<div class="form-group">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <?php echo $this->formLabel($form->get('text')); ?>
+        <?php echo $this->formTextArea($form->get('text')); ?>
+    </div>
+</div>

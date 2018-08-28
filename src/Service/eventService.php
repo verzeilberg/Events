@@ -53,9 +53,10 @@ class eventService implements eventServiceInterface {
                     if (is_object($event->getCategory()) && is_object($event->getCategory()->getFile())) {
                         $icon = $event->getCategory()->getFile()->getPath();
                     }
-
+                    $startDateEvent = $event->getEventStartDate()->format('Y-m-d');
+                    $eventTitle = $event->getTitle();
                     $location = [];
-                    $location[] = $event->getLabelText();
+                    $location[] = '<h6>' . $eventTitle .'</h6><b>'. $startDateEvent . '</b></br>' . $event->getLabelText();
                     $location[] = $event->getLatitude();
                     $location[] = $event->getLongitude();
                     $location[] = $icon;
