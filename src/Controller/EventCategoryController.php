@@ -69,11 +69,17 @@ class EventCategoryController extends AbstractActionController {
             if ($form->isValid()) {
 
                 if ($this->getRequest()->getFiles('fileUpload') != null) {
-                    $data = $this->uploadfilesService->uploadFile($this->getRequest()->getFiles('fileUpload'));
-                    $file = $this->uploadfilesService->createFile();
-                    $description = $this->getRequest()->getPost('fileDescription');
-                    $this->uploadfilesService->setNewFile($file, $data, $description, $this->currentUser());
-                    $eventCategory->setFile($file);
+                    $data = $this->uploadfilesService->uploadFile($this->getRequest()->getFiles('fileUpload'), null, 'default');
+
+                    if (is_array($data)) {
+
+                        $file = $this->uploadfilesService->createFile();
+                        $description = $this->getRequest()->getPost('fileDescription');
+                        $this->uploadfilesService->setNewFile($file, $data, $description, $this->currentUser());
+                        $eventCategory->setFile($file);
+                    } else {
+                        $this->flashMessenger()->addErrorMessage('Bestand niet opgeslagen: ' . $data);
+                    }
                 }
 
                 //Save Event
@@ -109,10 +115,14 @@ class EventCategoryController extends AbstractActionController {
 
                 if ($this->getRequest()->getFiles('fileUpload') != null) {
                     $data = $this->uploadfilesService->uploadFile($this->getRequest()->getFiles('fileUpload'));
-                    $file = $this->uploadfilesService->createFile();
-                    $description = $this->getRequest()->getPost('fileDescription');
-                    $this->uploadfilesService->setNewFile($file, $data, $description, $this->currentUser());
-                    $eventCategory->setFile($file);
+                    if (is_array($data)) {
+                        $file = $this->uploadfilesService->createFile();
+                        $description = $this->getRequest()->getPost('fileDescription');
+                        $this->uploadfilesService->setNewFile($file, $data, $description, $this->currentUser());
+                        $eventCategory->setFile($file);
+                    } else {
+                        $this->flashMessenger()->addErrorMessage('Bestand niet opgeslagen: ' . $data);
+                    }
                 }
 
                 //Save Event
@@ -128,6 +138,19 @@ class EventCategoryController extends AbstractActionController {
         ]);
     }
 
+        /**
+     * 
+     * Action to show all deleted blogs
+     */
+    public function archiveAction() {
+        $this->layout('layout/beheer');
+        $eventCategories = $this->eventCategoryService->getArchivedEventCategories();
+
+        return new ViewModel([
+            'eventCategories' => $eventCategories
+        ]);
+    }
+    
     public function archiefAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (empty($id)) {
