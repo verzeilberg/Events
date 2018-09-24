@@ -53,9 +53,10 @@ class eventService implements eventServiceInterface {
                     if (is_object($event->getCategory()) && is_object($event->getCategory()->getFile())) {
                         $icon = $event->getCategory()->getFile()->getPath();
                     }
-
+                    $startDateEvent = $event->getEventStartDate()->format('Y-m-d');
+                    $eventTitle = $event->getTitle();
                     $location = [];
-                    $location[] = $event->getLabelText();
+                    $location[] = '<h6>' . $eventTitle .'</h6><b>'. $startDateEvent . '</b></br>' . $event->getLabelText();
                     $location[] = $event->getLatitude();
                     $location[] = $event->getLongitude();
                     $location[] = $icon;
@@ -130,19 +131,26 @@ class eventService implements eventServiceInterface {
     public function getEventsByYearAndCategory($year = null, $catgory = null) {
 
         if ($year != null) {
-            $beginYear = new \DateTime("$year-1-1 00:00:00");
-            $endYear = new \DateTime("$year-12-31 23:59:59");
+            if ($year != 'all') {
+                $beginYear = new \DateTime("$year-1-1 00:00:00");
+                $endYear = new \DateTime("$year-12-31 23:59:59");
+            }
             $qb = $this->entityManager->getRepository('Event\Entity\Event')->createQueryBuilder('e');
             $qb->select('e')
-                    ->where('e.eventStartDate >= :beginOfYear')
-                    ->andWhere('e.eventEndDate <= :endOfYear')
-                    ->andWhere('e.deleted = 0');
+                    ->where('e.deleted = 0');
+            if ($year != 'all') {
+                $qb->andWhere('e.eventStartDate >= :beginOfYear')
+                        ->andWhere('e.eventEndDate <= :endOfYear');
+            }
+
             if ($catgory != 'all' && $catgory != null) {
                 $qb->andWhere('e.category = :category');
             }
-            $qb->orderBy('e.eventStartDate', 'DESC')
-                    ->setParameter('beginOfYear', $beginYear)
-                    ->setParameter('endOfYear', $endYear);
+            $qb->orderBy('e.eventStartDate', 'DESC');
+            if ($year != 'all') {
+                $qb->setParameter('beginOfYear', $beginYear)
+                        ->setParameter('endOfYear', $endYear);
+            }
             if ($catgory != 'all' && $catgory != null) {
                 $qb->setParameter('category', $catgory);
             }
