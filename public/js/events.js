@@ -1,6 +1,3 @@
-
-
-
 $(document).ready(function () {
     $(document).on('change', ':file', function () {
         var input = $(this),
@@ -32,4 +29,3 @@ $(document).ready(function () {
     CKEDITOR.replace('editor1');
 
 });
-

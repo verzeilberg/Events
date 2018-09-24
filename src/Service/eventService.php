@@ -49,7 +49,7 @@ class eventService implements eventServiceInterface {
             foreach ($events AS $event) {
                 if (!empty($event->getLatitude()) && !empty($event->getLongitude())) {
                     //Set icon
-                    $icon = '/img/icons/google-maps/run.svg';
+                    $icon = '/img/icons/google-maps/bullseye.svg';
                     if (is_object($event->getCategory()) && is_object($event->getCategory()->getFile())) {
                         $icon = $event->getCategory()->getFile()->getPath();
                     }
@@ -118,6 +118,61 @@ class eventService implements eventServiceInterface {
         } else {
             return null;
         }
+    }
+
+    /**
+     *
+     * Get event object
+     *
+     * @return      object
+     *
+     */
+    public function getEventsByYearAndCategory($year = null, $catgory = null) {
+
+        if ($year != null) {
+            $beginYear = new \DateTime("$year-1-1 00:00:00");
+            $endYear = new \DateTime("$year-12-31 23:59:59");
+            $qb = $this->entityManager->getRepository('Event\Entity\Event')->createQueryBuilder('e');
+            $qb->select('e')
+                    ->where('e.eventStartDate >= :beginOfYear')
+                    ->andWhere('e.eventEndDate <= :endOfYear')
+                    ->andWhere('e.deleted = 0');
+            if ($catgory != 'all' && $catgory != null) {
+                $qb->andWhere('e.category = :category');
+            }
+            $qb->orderBy('e.eventStartDate', 'DESC')
+                    ->setParameter('beginOfYear', $beginYear)
+                    ->setParameter('endOfYear', $endYear);
+            if ($catgory != 'all' && $catgory != null) {
+                $qb->setParameter('category', $catgory);
+            }
+
+            $query = $qb->getQuery();
+            $result = $query->getResult();
+
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     * Get array of startdates grouped by year
+     *
+     * @return      array
+     *
+     */
+    public function getYearsOfEvents() {
+        $qb = $this->entityManager->getRepository('Event\Entity\Event')
+                ->createQueryBuilder('e')
+                ->select('YEAR(e.eventStartDate) AS eYear')
+                ->where('e.deleted = 0')
+                ->groupBy('eYear');
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
     }
 
     /**

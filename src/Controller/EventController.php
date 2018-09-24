@@ -231,12 +231,19 @@ class EventController extends AbstractActionController {
             }
         }
         
+        
+        $returnURL = [];
+        $returnURL['id'] = $id;
+        $returnURL['route'] = 'beheer/event';
+        $returnURL['action'] = 'edit';
+        
         return new ViewModel([
             'form' => $form,
             'formEventImage' => $formEventImage,
             'image' => $event->getEventImage(),
             'latitude' => $event->getLatitude(),
-            'longitude' => $event->getLongitude()
+            'longitude' => $event->getLongitude(),
+            'returnURL' => $returnURL
         ]);
     }
 
