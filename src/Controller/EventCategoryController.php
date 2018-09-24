@@ -44,19 +44,6 @@ class EventCategoryController extends AbstractActionController {
         );
     }
 
-    /**
-     * 
-     * Action to show all deleted blogs
-     */
-    public function archiveAction() {
-        $this->layout('layout/beheer');
-        $eventCategories = $this->eventCategoryService->getArchivedEventCategories();
-
-        return new ViewModel([
-            'events' => $eventCategories
-        ]);
-    }
-
     public function addAction() {
         $this->layout('layout/beheer');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/upload-files.js');
