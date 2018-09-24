@@ -186,7 +186,7 @@ class eventCategoryService implements eventCategoryServiceInterface {
     public function setExistingEventCategory($eventCategory, $currentUser) {
         $eventCategory->setDateChanged(new \DateTime());
         $eventCategory->setChangedBy($currentUser);
-        $this->storeEvent($eventCategory);
+        $this->storeEventCategory($eventCategory);
     }
 
     /**
