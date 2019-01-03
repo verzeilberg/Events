@@ -86,25 +86,22 @@ class EventController extends AbstractActionController {
             $formEventImage->setData($this->getRequest()->getPost());
             if ($form->isValid() && $formEventImage->isValid()) {
 
-                $aImageFile = '';
-                $aImageFile = $this->getRequest()->getFiles('image');
-
-                //Upload image file's
-                if ($aImageFile['error'] === 0) {
-                    //Upload image file's
-                    $cropImageService = $this->cropImageService;
+                //Create image array and set it
+                $imageFile = [];
+                $imageFile = $this->getRequest()->getFiles('image');
+                //Upload image
+                if ($imageFile['error'] === 0) {
                     //Upload original file
-                    $imageUploadSettings = array();
-                    $imageUploadSettings['uploadFolder'] = 'img/userFiles/event/original/';
-                    $imageFiles = $this->cropImageService->uploadImage($aImageFile, $imageUploadSettings, 'original', $Image, 1);
+                    $imageFiles = $this->cropImageService->uploadImage($imageFile, 'event', 'original', $image, 1);
                     if (is_array($imageFiles)) {
-
                         $folderOriginal = $imageFiles['imageType']->getFolder();
                         $fileName = $imageFiles['imageType']->getFileName();
                         $image = $imageFiles['image'];
-                        //Upload thumb 150x150
-                        $imageFiles = $cropImageService->resizeAndCropImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/thumb/', 150, 150, '150x150', $image);
-                        //Create 400x200 crop
+                        //Upload thumb 150x100
+                        $imageFiles = $this->cropImageService->resizeAndCropImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/thumb/', 150, 150, '150x150', $image);
+                        //Resize image
+                        $imageFiles = $this->cropImageService->ResizeImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/resized/', 100, null, 'resized', $image);
+                        //Create 450x300 crop
                         $imageFiles = $this->cropImageService->createCropArray('400x200', $folderOriginal, $fileName, 'public/img/userFiles/event/400x200/', 400, 200, $image);
                         $image = $imageFiles['image'];
                         $cropImages = $imageFiles['cropImages'];
@@ -114,24 +111,22 @@ class EventController extends AbstractActionController {
                         //Create session container for crop
                         $this->cropImageService->createContainerImages($cropImages, $returnURL);
 
-                        //Save event image
-                        $this->em->persist($image);
-                        $this->em->flush();
+                        //Save blog image
+                        $this->imageService->saveImage($image);
+                        //Add image to club
                         $event->setEventImage($image);
-                    }
-                } else {
-
-                    if (!empty($imageFiles)) {
+                    } else {
                         $this->flashMessenger()->addErrorMessage($imageFiles);
                     }
+                } else {
+                    $this->flashMessenger()->addErrorMessage('Image not uploaded');
                 }
-
                 //End upload image
                 //Save Event
                 $this->eventService->setNewEvent($event, $this->currentUser());
                 $this->flashMessenger()->addSuccessMessage('Event opgeslagen');
 
-                if ($aImageFile['error'] === 0 && is_array($imageFiles)) {
+                if ($imageFile['error'] === 0 && is_array($imageFiles)) {
                     return $this->redirect()->toRoute('beheer/images', array('action' => 'crop'));
                 } else {
                     return $this->redirect()->toRoute('beheer/event');
@@ -139,9 +134,12 @@ class EventController extends AbstractActionController {
             }
         }
 
+        $returnURL = $this->cropImageService->createReturnURL('beheer/event', 'index');
+
         return new ViewModel([
             'form' => $form,
-            'formEventImage' => $formEventImage
+            'formEventImage' => $formEventImage,
+            'returnURL' => $returnURL
         ]);
     }
 
@@ -152,7 +150,6 @@ class EventController extends AbstractActionController {
         $this->viewhelpermanager->get('headScript')->appendFile('//cdn.ckeditor.com/4.10.0/standard/ckeditor.js');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/events.js');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/uploadImages.js');
-        
         $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/dateTimePicker/bootstrap-datetimepicker.css');
         $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/events.css');
         
@@ -178,25 +175,22 @@ class EventController extends AbstractActionController {
             $form->setData($this->getRequest()->getPost());
             $formEventImage->setData($this->getRequest()->getPost());
             if ($form->isValid() && $formEventImage->isValid()) {
-
-                $aImageFile = '';
-                $aImageFile = $this->getRequest()->getFiles('image');
-
-                //Upload image file's
-                if ($aImageFile['error'] === 0) {
-                    //Upload image file's
-                    $cropImageService = $this->cropImageService;
+                //Create image array and set it
+                $imageFile = [];
+                $imageFile = $this->getRequest()->getFiles('image');
+                //Upload image
+                if ($imageFile['error'] === 0) {
                     //Upload original file
-                    $imageUploadSettings['uploadFolder'] = 'img/userFiles/event/original/';
-                    $imageFiles = $this->cropImageService->uploadImage($aImageFile, $imageUploadSettings, 'original', $Image, 1);
+                    $imageFiles = $this->cropImageService->uploadImage($imageFile, 'event', 'original', $image, 1);
                     if (is_array($imageFiles)) {
-
                         $folderOriginal = $imageFiles['imageType']->getFolder();
                         $fileName = $imageFiles['imageType']->getFileName();
                         $image = $imageFiles['image'];
-                        //Upload thumb 150x150
-                        $imageFiles = $cropImageService->resizeAndCropImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/thumb/', 150, 150, '150x150', $image);
-                        //Create 400x200 crop
+                        //Upload thumb 150x100
+                        $imageFiles = $this->cropImageService->resizeAndCropImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/thumb/', 150, 150, '150x150', $image);
+                        //Resize image
+                        $imageFiles = $this->cropImageService->ResizeImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/resized/', 100, null, 'resized', $image);
+                        //Create 450x300 crop
                         $imageFiles = $this->cropImageService->createCropArray('400x200', $folderOriginal, $fileName, 'public/img/userFiles/event/400x200/', 400, 200, $image);
                         $image = $imageFiles['image'];
                         $cropImages = $imageFiles['cropImages'];
@@ -206,24 +200,23 @@ class EventController extends AbstractActionController {
                         //Create session container for crop
                         $this->cropImageService->createContainerImages($cropImages, $returnURL);
 
-                        //Save event image
-                        $this->em->persist($image);
-                        $this->em->flush();
+                        //Save blog image
+                        $this->imageService->saveImage($image);
+                        //Add image to club
                         $event->setEventImage($image);
-                    }
-                } else {
-
-                    if (!empty($imageFiles)) {
+                    } else {
                         $this->flashMessenger()->addErrorMessage($imageFiles);
                     }
+                } else {
+                    $this->flashMessenger()->addErrorMessage('Image not uploaded');
                 }
-
                 //End upload image
+
                 //Save Event
                 $this->eventService->setExistingEvent($event, $this->currentUser());
                 $this->flashMessenger()->addSuccessMessage('Event opgeslagen');
 
-                if ($aImageFile['error'] === 0 && is_array($imageFiles)) {
+                if ($imageFile['error'] === 0 && is_array($imageFiles)) {
                     return $this->redirect()->toRoute('beheer/images', array('action' => 'crop'));
                 } else {
                     return $this->redirect()->toRoute('beheer/event');
@@ -231,11 +224,7 @@ class EventController extends AbstractActionController {
             }
         }
         
-        
-        $returnURL = [];
-        $returnURL['id'] = $id;
-        $returnURL['route'] = 'beheer/event';
-        $returnURL['action'] = 'edit';
+        $returnURL = $this->cropImageService->createReturnURL('beheer/event', 'edit', $id);
         
         return new ViewModel([
             'form' => $form,
@@ -290,6 +279,7 @@ class EventController extends AbstractActionController {
         if (empty($event)) {
             return $this->redirect()->toRoute('beheer/event');
         }
+        
         //Delete linked images
         $image = $event->getEventImage();
         if (count($image) > 0) {

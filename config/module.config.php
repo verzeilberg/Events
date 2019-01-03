@@ -90,7 +90,7 @@ return [
             ]
         ]
     ],
-        'asset_manager' => [
+    'asset_manager' => [
         'resolver_configs' => [
             'paths' => [
                 __DIR__ . '/../public',
