@@ -197,7 +197,8 @@ class eventService implements eventServiceInterface {
                 ->createQueryBuilder('e')
                 ->select('YEAR(e.eventStartDate) AS eYear')
                 ->where('e.deleted = 0')
-                ->groupBy('eYear');
+                ->groupBy('eYear')
+                ->orderBy('eYear', 'DESC');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
