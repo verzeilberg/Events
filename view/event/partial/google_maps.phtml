@@ -1,0 +1,91 @@
+<div class="form-group">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div id="map" class="form-control"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    var map;
+    var markers = [];
+    function initMap() {
+        var latitude = 52.1979222; // YOUR LATITUDE VALUE
+        var longitude = 5.0211668; // YOUR LONGITUDE VALUE
+
+        var myLatLng = {lat: latitude, lng: longitude};
+
+<?php if (empty($latitude) || empty($longitude)) { ?>
+            var markerPosition = {lat: latitude, lng: longitude};
+<?php } else { ?>
+            var markerPosition = {lat: <?php echo $latitude; ?>, lng: <?php echo $longitude; ?>};
+            latitude = <?php echo $latitude; ?>;
+            longitude = <?php echo $longitude; ?>;
+<?php } ?>
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: myLatLng,
+            zoom: 7.76,
+            disableDoubleClickZoom: true, // disable the default map zoom on double click
+        });
+
+        // Update lat/long value of div when anywhere in the map is clicked    
+        google.maps.event.addListener(map, 'click', function (event) {
+            DeleteMarkers();
+            var marker = new google.maps.Marker({
+                position: event.latLng,
+                map: map,
+                icon: new google.maps.MarkerImage(
+                            '/img/icons/google-maps/bullseye.svg',
+                            null,
+                            null,
+                            null,
+                            new google.maps.Size(40, 55)
+                            ),
+                title: event.latLng.lat() + ', ' + event.latLng.lng()
+            });
+            markers.push(marker);
+            $('#latclicked').attr('value', event.latLng.lat());
+            $('#longclicked').attr('value', event.latLng.lng());
+        });
+
+        // Update lat/long value of div when you move the mouse over the map
+        google.maps.event.addListener(map, 'mousemove', function (event) {
+            $('#latmoved').attr('value', event.latLng.lat());
+            $('#longmoved').attr('value', event.latLng.lng());
+        });
+
+        //Set marker on page load
+        var marker = new google.maps.Marker({
+            position: markerPosition,
+            map: map,
+            icon: new google.maps.MarkerImage(
+                            '/img/icons/google-maps/bullseye.svg',
+                            null,
+                            null,
+                            null,
+                            new google.maps.Size(40, 55)
+                            ),
+            // setting latitude & longitude as title of the marker
+            // title is shown when you hover over the marker
+            title: latitude + ', ' + longitude
+        });
+
+        // Update lat/long value of div when the marker is clicked
+        marker.addListener('click', function (event) {
+            $('#latclicked').attr('value', event.latLng.lat());
+            $('#longclicked').attr('value', event.latLng.lng());
+        });
+
+        //Add marker to the array.
+        markers.push(marker);
+    }
+
+    function DeleteMarkers() {
+        //Loop through all the markers and remove
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+    };
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1n_2dwkLKZ8lMls39ZGeLuxQ08oyniIs&callback=initMap">
+</script>
