@@ -56,7 +56,7 @@ class eventService implements eventServiceInterface {
                     $startDateEvent = $event->getEventStartDate()->format('Y-m-d');
                     $eventTitle = $event->getTitle();
                     $location = [];
-                    $location[] = '<h6>' . $eventTitle .'</h6><b>'. $startDateEvent . '</b></br>' . $event->getLabelText();
+                    $location[] = '<h6>' . $eventTitle . '</h6><b>' . $startDateEvent . '</b></br>' . $event->getLabelText();
                     $location[] = $event->getLatitude();
                     $location[] = $event->getLongitude();
                     $location[] = $icon;
@@ -123,6 +123,27 @@ class eventService implements eventServiceInterface {
 
     /**
      *
+     * Get array of customers
+     * @var $searchString string to search for
+     *
+     * @return      array
+     *
+     */
+    public function searchEvents($searchString) {
+        $qb = $this->entityManager->getRepository(Event::class)->createQueryBuilder('e');
+        $orX = $qb->expr()->orX();
+        $orX->add($qb->expr()->like('e.title', $qb->expr()->literal("%$searchString%")));
+        $orX->add($qb->expr()->like('e.labelText', $qb->expr()->literal("%$searchString%")));
+        $orX->add($qb->expr()->like('e.text', $qb->expr()->literal("%$searchString%")));
+        $qb->where($orX);
+        $qb->orderBy('e.eventStartDate', 'DESC');
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+        return $result;
+    }
+
+    /**
+     *
      * Get event object
      *
      * @return      object
@@ -176,7 +197,8 @@ class eventService implements eventServiceInterface {
                 ->createQueryBuilder('e')
                 ->select('YEAR(e.eventStartDate) AS eYear')
                 ->where('e.deleted = 0')
-                ->groupBy('eYear');
+                ->groupBy('eYear')
+                ->orderBy('eYear', 'DESC');
 
         $query = $qb->getQuery();
         $result = $query->getResult();

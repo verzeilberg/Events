@@ -38,12 +38,18 @@ class EventController extends AbstractActionController {
 
     public function indexAction() {
         $this->layout('layout/beheer');
-
         $events = $this->eventService->getEvents();
+
+        $searchString = '';
+        if ($this->getRequest()->isPost()) {
+            $searchString = $this->getRequest()->getPost('search');
+            $events = $this->eventService->searchEvents($searchString);
+        }
 
         return new ViewModel(
                 array(
-            'events' => $events
+            'events' => $events,
+            'searchString' => $searchString
                 )
         );
     }
@@ -152,12 +158,12 @@ class EventController extends AbstractActionController {
         $this->viewhelpermanager->get('headScript')->appendFile('/js/uploadImages.js');
         $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/dateTimePicker/bootstrap-datetimepicker.css');
         $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/events.css');
-        
+
         //Create new container for crop images
         $container = new Container('cropImages');
         $container->getManager()->getStorage()->clear('cropImages');
-        
-        
+
+
         $id = (int) $this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/event');
@@ -166,7 +172,7 @@ class EventController extends AbstractActionController {
         if (empty($event)) {
             return $this->redirect()->toRoute('beheer/event');
         }
-        
+
         $form = $this->eventService->createEventForm($event);
         $Image = $this->imageService->createImage();
         $formEventImage = $this->imageService->createImageForm($Image);
@@ -211,7 +217,6 @@ class EventController extends AbstractActionController {
                     $this->flashMessenger()->addErrorMessage('Image not uploaded');
                 }
                 //End upload image
-
                 //Save Event
                 $this->eventService->setExistingEvent($event, $this->currentUser());
                 $this->flashMessenger()->addSuccessMessage('Event opgeslagen');
@@ -223,9 +228,9 @@ class EventController extends AbstractActionController {
                 }
             }
         }
-        
+
         $returnURL = $this->cropImageService->createReturnURL('beheer/event', 'edit', $id);
-        
+
         return new ViewModel([
             'form' => $form,
             'formEventImage' => $formEventImage,
@@ -279,7 +284,7 @@ class EventController extends AbstractActionController {
         if (empty($event)) {
             return $this->redirect()->toRoute('beheer/event');
         }
-        
+
         //Delete linked images
         $image = $event->getEventImage();
         if (count($image) > 0) {
@@ -290,7 +295,5 @@ class EventController extends AbstractActionController {
         $this->flashMessenger()->addSuccessMessage('Event verwijderd');
         $this->redirect()->toRoute('beheer/event', array('action' => 'archive'));
     }
-    
-
 
 }
