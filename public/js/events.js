@@ -5,7 +5,7 @@ $(document).ready(function () {
                 label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
         input.trigger('fileselect', [numFiles, label]);
 
-        $('input[name=blogImageFileName]').val(label);
+        $('label.custom-file-label').html(label);
     });
 
 

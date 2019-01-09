@@ -18,7 +18,8 @@ use UploadImages\Entity\ImageType;
  * Entities
  */
 
-class EventController extends AbstractActionController {
+class EventController extends AbstractActionController
+{
 
     protected $vhm;
     protected $em;
@@ -27,7 +28,8 @@ class EventController extends AbstractActionController {
     private $imageService;
     private $eventService;
 
-    public function __construct($vhm, $em, $viewhelpermanager, $cropImageService, $imageService, $eventService) {
+    public function __construct($vhm, $em, $viewhelpermanager, $cropImageService, $imageService, $eventService)
+    {
         $this->vhm = $vhm;
         $this->em = $em;
         $this->viewhelpermanager = $viewhelpermanager;
@@ -36,38 +38,47 @@ class EventController extends AbstractActionController {
         $this->eventService = $eventService;
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         $this->layout('layout/beheer');
-        $events = $this->eventService->getEvents();
+        $page = $this->params()->fromQuery('page', 1);
+        $query = $this->eventService->getEvents();
 
         $searchString = '';
         if ($this->getRequest()->isPost()) {
             $searchString = $this->getRequest()->getPost('search');
-            $events = $this->eventService->searchEvents($searchString);
+            $query = $this->eventService->searchEvents($searchString);
         }
 
+        $events = $this->eventService->getItemsForPagination($query, $page, 10);
+
         return new ViewModel(
-                array(
-            'events' => $events,
-            'searchString' => $searchString
-                )
+            [
+                'events' => $events,
+                'searchString' => $searchString
+            ]
         );
     }
 
     /**
-     * 
+     *
      * Action to show all deleted blogs
      */
-    public function archiveAction() {
+    public function archiveAction()
+    {
         $this->layout('layout/beheer');
-        $events = $this->eventService->getArchivedEvents();
+        $page = $this->params()->fromQuery('page', 1);
+        $query = $this->eventService->getArchivedEvents();
+        $events = $this->eventService->getItemsForPagination($query, $page, 1);
+
 
         return new ViewModel([
             'events' => $events
         ]);
     }
 
-    public function addAction() {
+    public function addAction()
+    {
         $this->layout('layout/beheer');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/dateTimePicker/bootstrap-datetimepicker.min.js');
         $this->viewhelpermanager->get('headScript')->appendFile('//cdn.ckeditor.com/4.10.0/standard/ckeditor.js');
@@ -149,7 +160,8 @@ class EventController extends AbstractActionController {
         ]);
     }
 
-    public function editAction() {
+    public function editAction()
+    {
         //First include layout, js and css files
         $this->layout('layout/beheer');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/dateTimePicker/bootstrap-datetimepicker.min.js');
@@ -164,7 +176,7 @@ class EventController extends AbstractActionController {
         $container->getManager()->getStorage()->clear('cropImages');
 
 
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/event');
         }
@@ -241,8 +253,9 @@ class EventController extends AbstractActionController {
         ]);
     }
 
-    public function archiefAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+    public function archiefAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/blog');
         }
@@ -256,8 +269,9 @@ class EventController extends AbstractActionController {
         return $this->redirect()->toRoute('beheer/event');
     }
 
-    public function unArchiefAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+    public function unArchiefAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/event');
         }
@@ -272,11 +286,12 @@ class EventController extends AbstractActionController {
     }
 
     /**
-     * 
+     *
      * Action to delete the event from the database and linked images
      */
-    public function deleteAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+    public function deleteAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/event');
         }

@@ -1,11 +1,8 @@
-<div class="form-group <?php echo (count($form->getMessages('title')) > 0 ? 'has-error' : '' ) ?>">
-    <div class="col-sm-6 col-md-6 col-lg-6">
+<div class="form-group <?php echo(count($form->getMessages('title')) > 0 ? 'has-error' : '') ?>">
         <?php echo $this->formLabel($form->get('title')); ?>
         <?php echo $this->formText($form->get('title')); ?>
-    </div>
 </div>
-<div class="form-group <?php echo (count($form->getMessages('eventStartDate')) > 0 ? 'has-error' : '' ) ?>">
-    <div class="col-sm-6 col-md-6 col-lg-6">
+<div class="form-group <?php echo(count($form->getMessages('eventStartDate')) > 0 ? 'has-error' : '') ?>">
         <?php echo $this->formLabel($form->get('eventStartDate')->setFormat('Y-m-d H:i')); ?>
         <div class='input-group date' id='datetimepicker1'>
             <?php echo $this->formText($form->get('eventStartDate')); ?>
@@ -13,10 +10,8 @@
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
-    </div>
 </div>
-<div class="form-group <?php echo (count($form->getMessages('eventEndDate')) > 0 ? 'has-error' : '' ) ?>">
-    <div class="col-sm-6 col-md-6 col-lg-6">
+<div class="form-group <?php echo(count($form->getMessages('eventEndDate')) > 0 ? 'has-error' : '') ?>">
         <?php echo $this->formLabel($form->get('eventEndDate')->setFormat('Y-m-d H:i')); ?><br/>
         <div class='input-group date' id='datetimepicker2'>
 
@@ -25,67 +20,72 @@
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
-    </div>
 </div>
-<div class="form-group <?php echo (count($form->getMessages('category')) > 0 ? 'has-error' : '' ) ?>">
-    <div class="col-sm-6 col-md-6 col-lg-6">
+<div class="form-group <?php echo(count($form->getMessages('category')) > 0 ? 'has-error' : '') ?>">
         <?php echo $this->formLabel($form->get('category')); ?>
         <?php echo $this->formSelect($form->get('category')); ?>
-    </div>
 </div>
 <!-- Google maps -->
 <?php
 echo $this->partial('event/partial/google_maps.phtml');
 ?>
-<div class="form-group">
-    <?php echo $this->formLabel($form->get('longitude')); ?>
-    <div class="col-sm-5 col-md-5 col-lg-5">
+<div class="row">
         <div class="input-group">
+        <?php echo $this->formLabel($form->get('longitude')); ?>
+        </div>
+</div>
+<div class="row">
+    <div class="col">
+        <label class="sr-only" for="inlineFormInputGroup">Longitude</label>
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-map-marker-alt"></i></div>
+            </div>
             <?php echo $this->formText($form->get('longitude')); ?>
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-map-marker"></span>
-            </span>
         </div>
     </div>
-    <div class="col-sm-5 col-md-5 col-lg-5">
-        <div class="input-group">
+    <div class="col">
+        <label class="sr-only" for="inlineFormInputGroup">Longitude</label>
+        <div class="input-group mb-2">
             <input type="text" class="form-control" id="longmoved" value="" readonly="readonly"/>
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-map-marker"></span>
-            </span>
+            <div class="input-group-append">
+                <div class="input-group-text"><i class="fas fa-map-marker-alt"></i></div>
+            </div>
         </div>
     </div>
 </div>
-<div class="form-group">
-    <?php echo $this->formLabel($form->get('latitude')); ?>
-    <div class="col-sm-5 col-md-5 col-lg-5">
+<div class="row">
         <div class="input-group">
+            <?php echo $this->formLabel($form->get('latitude')); ?>
+        </div>
+</div>
+<div class="row">
+    <div class="col">
+        <label class="sr-only" for="inlineFormInputGroup">Latitude</label>
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fas fa-map-marker-alt"></i></div>
+            </div>
             <?php echo $this->formText($form->get('latitude')); ?>
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-map-marker"></span>
-            </span>
         </div>
     </div>
-    <div class="col-sm-5 col-md-5 col-lg-5">
-        <div class="input-group">
+    <div class="col">
+        <label class="sr-only" for="inlineFormInputGroup">Longitude</label>
+        <div class="input-group mb-2">
             <input type="text" class="form-control" id="latmoved" value="" readonly="readonly"/>
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-map-marker"></span>
-            </span>
+            <div class="input-group-append">
+                <div class="input-group-text"><i class="fas fa-map-marker-alt"></i></div>
+            </div>
         </div>
     </div>
 </div>
 <div class="form-group">
-    <div class="col-sm-12 col-md-12 col-lg-12">
         <?php echo $this->formLabel($form->get('labelText')); ?>
         <?php echo $this->formTextArea($form->get('labelText')); ?>
-    </div>
 </div>
 <!-- End google maps -->
 
 <div class="form-group">
-    <div class="col-sm-12 col-md-12 col-lg-12">
         <?php echo $this->formLabel($form->get('text')); ?>
         <?php echo $this->formTextArea($form->get('text')); ?>
-    </div>
 </div>

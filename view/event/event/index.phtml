@@ -1,62 +1,80 @@
 <?php
 $this->mainMenu()->setActiveItemId('eventbeheer');
+$this->pageBreadcrumbs()->setLayout('beheer');
 $this->pageBreadcrumbs()->setItems([
     'Beheer' => $this->url('beheer'),
     'Events' => $this->url('beheer/event'),
 ]);
 ?>
-<hgroup id="headAdminTitle" class="col-sm-12 col-md-12 col-lg-12">
-    <h1 id="index">CONTACT BEHEER</h1>
-</hgroup>
+<!-- Page Header -->
+<div class="row">
+    <h1 class="col">CONTACT BEHEER</h1>
+</div>
 <!-- Breadcrumbs -->
-<div class="col-lg-12 col-md-12 col-sm-12">
-    <?= $this->pageBreadcrumbs()->render(); ?>
+<div class="row">
+    <div class="col">
+        <?= $this->pageBreadcrumbs()->render(); ?>
+    </div>
 </div>
-<div class="col-lg-6 col-md-6 col-sm-6">
-    <a class="btn btn-default" href="
+<!-- Page header options -->
+<div class="row mb-3">
+    <div class="col">
+        <a class="btn btn-secondary" href="
        <?= $this->url('beheer/event', ['action' => 'add']); ?>">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Event
-    </a>
-    <a class="btn btn-default" href="
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Event
+        </a>
+        <a class="btn btn-secondary" href="
        <?= $this->url('beheer/event', ['action' => 'archive']); ?>">
-        <i class="fas fa-archive"></i> Archief
-    </a>
+            <i class="fas fa-archive"></i> Archief
+        </a>
+    </div>
+    <div class="col-md-auto text-right">
+        <form class="form-inline" name="searchEvents" method="post" action="<?php echo $this->url('beheer/event'); ?>">
+            <div class="col text-right" style="padding-right:0;">
+                <input class="form-control" name="search" value="<?php echo $searchString; ?>" type="search"
+                       placeholder="Search" aria-label="Search">
+                <button class="btn btn-secondary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
 </div>
-<div class="col-lg-6 col-md-6 col-sm-6 text-right">
-    <form class="form-inline" name="searchEvents" method="post" action="<?php echo $this->url('beheer/event'); ?>">
-        <div class="col text-right" style="padding-right:0;">
-            <input class="form-control" name="search" value="<?php echo $searchString; ?>" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-default" type="submit">Search</button>
-        </div>
-    </form>
-</div>
-<div class="col-lg-12 col-md-12 col-sm-12">
-    <table class="table table-bordered table-hover">
-        <tr>
-            <th>Startdatum</th>
-            <th>Titel</th>
-            <th>Categorie</th>
-            <th>Einddatum</th>
-            <th class="text-center"><span class="glyphicon glyphicon-cog"></span></th>
-        </tr>
-        <?php foreach ($events AS $event) { ?>
+<div class="row">
+    <div class="col">
+        <table class="table table-dark table-sm table-bordered table-hover table-striped">
+            <thead class="thead-dark">
             <tr>
-                <td><?php echo (is_object($event->getEventStartDate()) ? $event->getEventStartDate()->format('d-m-Y H:i:s') : ''); ?></td>
-                <td><?php echo $event->getTitle(); ?></td>
-                <td><?php echo (is_object($event->getCategory()) ? $event->getCategory()->getName() : ''); ?></td>
-                <td><?php echo (is_object($event->getEventEndDate()) ? $event->getEventEndDate()->format('d-m-Y H:i:s') : ''); ?></td>
-                <td class="td-center">
-                    <a class="btn btn-sm btn-primary" title="Edit" href="
-                       <?= $this->url('beheer/event', ['action' => 'edit', 'id' => $event->getId()]); ?>">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                    </a>
-                    &nbsp;
-                    <a class="btn btn-sm btn-primary" title="Archiveer" href="
-                       <?= $this->url('beheer/event', ['action' => 'archief', 'id' => $event->getId()]); ?>">
-                        <i class="fas fa-archive"></i>
-                    </a>
-                </td>
+                <th>Startdatum</th>
+                <th>Titel</th>
+                <th>Categorie</th>
+                <th>Einddatum</th>
+                <th class="text-center"><i class="fas fa-cogs"></i></th>
             </tr>
-        <?php } ?>
-    </table>
+            </thead>
+            <tbody>
+            <?php foreach ($events AS $event) { ?>
+                <tr>
+                    <td><?php echo(is_object($event->getEventStartDate()) ? $event->getEventStartDate()->format('d-m-Y H:i:s') : ''); ?></td>
+                    <td><?php echo $event->getTitle(); ?></td>
+                    <td><?php echo(is_object($event->getCategory()) ? $event->getCategory()->getName() : ''); ?></td>
+                    <td><?php echo(is_object($event->getEventEndDate()) ? $event->getEventEndDate()->format('d-m-Y H:i:s') : ''); ?></td>
+                    <td class="td-center">
+                        <a class="btn btn-sm btn-secondary" title="Edit" href="
+                       <?= $this->url('beheer/event', ['action' => 'edit', 'id' => $event->getId()]); ?>">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a class="btn btn-sm btn-secondary" title="Archiveer" href="
+                       <?= $this->url('beheer/event', ['action' => 'archief', 'id' => $event->getId()]); ?>">
+                            <i class="fas fa-archive"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<?= $this->paginationControl($events,
+    'Sliding',
+    'layout/paginator',
+    array('route' => 'beheer/event')); ?>

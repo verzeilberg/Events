@@ -35,3 +35,7 @@ span.closeEvent {
 span.closeEvent:hover {
     color:#fff;
 }
+
+.custom-file-input{
+    cursor:pointer;
+}

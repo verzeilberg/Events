@@ -5,45 +5,73 @@ namespace Event\Service;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+use Zend\Paginator\Paginator;
 
 /*
  * Entities
  */
+
 use Event\Entity\Event;
 
-class eventService implements eventServiceInterface {
+class eventService implements eventServiceInterface
+{
 
     /**
      * Constructor.
      */
-    public function __construct($entityManager) {
+    public function __construct($entityManager)
+    {
         $this->entityManager = $entityManager;
     }
 
     /**
      *
-     * Get array of events 
+     * Get array of events
      *
-     * @return      array
+     * @return      query
      *
      */
-    public function getEvents() {
-        $events = $this->entityManager->getRepository(Event::class)
-                ->findBy(['deleted' => 0], ['eventStartDate' => 'DESC']);
+    public function getEvents()
+    {
 
-        return $events;
+        $qb = $this->entityManager->getRepository(Event::class)->createQueryBuilder('e')
+            ->where('e.deleted = 0')
+            ->orderBy('e.eventStartDate', 'DESC');
+        return $qb->getQuery();
     }
 
     /**
      *
-     * Create array of events for google maps 
+     * Get array of languages  for pagination
+     * @var $query query
+     * @var $currentPage current page
+     * @var $itemsPerPage items on a page
      *
-     * @param       events $events array with events
-     * 
      * @return      array
      *
      */
-    public function createEventsArrayForMaps($events) {
+    public function getItemsForPagination($query, $currentPage = 1, $itemsPerPage = 10)
+    {
+        $adapter = new DoctrineAdapter(new ORMPaginator($query, false));
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage($itemsPerPage);
+        $paginator->setCurrentPageNumber($currentPage);
+        return $paginator;
+    }
+
+    /**
+     *
+     * Create array of events for google maps
+     *
+     * @param       events $events array with events
+     *
+     * @return      array
+     *
+     */
+    public function createEventsArrayForMaps($events)
+    {
         $locations = [];
         if ($events != null) {
             foreach ($events AS $event) {
@@ -75,16 +103,17 @@ class eventService implements eventServiceInterface {
      * @return      object
      *
      */
-    public function getUpcommingEvent() {
+    public function getUpcommingEvent()
+    {
 
         $currentDate = new \DateTime();
         $qb = $this->entityManager->getRepository('Event\Entity\Event')->createQueryBuilder('e');
         $qb->select('e')
-                ->where('e.eventStartDate >= :identifier')
-                ->andWhere('e.deleted = 0')
-                ->orderBy('e.eventStartDate', 'ASC')
-                ->setParameter('identifier', $currentDate)
-                ->setMaxResults(1);
+            ->where('e.eventStartDate >= :identifier')
+            ->andWhere('e.deleted = 0')
+            ->orderBy('e.eventStartDate', 'ASC')
+            ->setParameter('identifier', $currentDate)
+            ->setMaxResults(1);
 
         $query = $qb->getQuery();
         $result = $query->getResult();
@@ -99,18 +128,19 @@ class eventService implements eventServiceInterface {
      * @return      object
      *
      */
-    public function getEventsByYear($year = null) {
+    public function getEventsByYear($year = null)
+    {
         if ($year != null) {
             $beginYear = new \DateTime("$year-1-1 00:00:00");
             $endYear = new \DateTime("$year-12-31 23:59:59");
             $qb = $this->entityManager->getRepository('Event\Entity\Event')->createQueryBuilder('e');
             $qb->select('e')
-                    ->where('e.eventStartDate >= :beginOfYear')
-                    ->andWhere('e.eventEndDate <= :endOfYear')
-                    ->andWhere('e.deleted = 0')
-                    ->orderBy('e.eventStartDate', 'DESC')
-                    ->setParameter('beginOfYear', $beginYear)
-                    ->setParameter('endOfYear', $endYear);
+                ->where('e.eventStartDate >= :beginOfYear')
+                ->andWhere('e.eventEndDate <= :endOfYear')
+                ->andWhere('e.deleted = 0')
+                ->orderBy('e.eventStartDate', 'DESC')
+                ->setParameter('beginOfYear', $beginYear)
+                ->setParameter('endOfYear', $endYear);
 
             $query = $qb->getQuery();
             $result = $query->getResult();
@@ -129,7 +159,8 @@ class eventService implements eventServiceInterface {
      * @return      array
      *
      */
-    public function searchEvents($searchString) {
+    public function searchEvents($searchString)
+    {
         $qb = $this->entityManager->getRepository(Event::class)->createQueryBuilder('e');
         $orX = $qb->expr()->orX();
         $orX->add($qb->expr()->like('e.title', $qb->expr()->literal("%$searchString%")));
@@ -137,9 +168,7 @@ class eventService implements eventServiceInterface {
         $orX->add($qb->expr()->like('e.text', $qb->expr()->literal("%$searchString%")));
         $qb->where($orX);
         $qb->orderBy('e.eventStartDate', 'DESC');
-        $query = $qb->getQuery();
-        $result = $query->getResult();
-        return $result;
+        return $qb->getQuery();
     }
 
     /**
@@ -149,7 +178,8 @@ class eventService implements eventServiceInterface {
      * @return      object
      *
      */
-    public function getEventsByYearAndCategory($year = null, $catgory = null) {
+    public function getEventsByYearAndCategory($year = null, $catgory = null)
+    {
 
         if ($year != null) {
             if ($year != 'all') {
@@ -158,10 +188,10 @@ class eventService implements eventServiceInterface {
             }
             $qb = $this->entityManager->getRepository('Event\Entity\Event')->createQueryBuilder('e');
             $qb->select('e')
-                    ->where('e.deleted = 0');
+                ->where('e.deleted = 0');
             if ($year != 'all') {
                 $qb->andWhere('e.eventStartDate >= :beginOfYear')
-                        ->andWhere('e.eventEndDate <= :endOfYear');
+                    ->andWhere('e.eventEndDate <= :endOfYear');
             }
 
             if ($catgory != 'all' && $catgory != null) {
@@ -170,7 +200,7 @@ class eventService implements eventServiceInterface {
             $qb->orderBy('e.eventStartDate', 'DESC');
             if ($year != 'all') {
                 $qb->setParameter('beginOfYear', $beginYear)
-                        ->setParameter('endOfYear', $endYear);
+                    ->setParameter('endOfYear', $endYear);
             }
             if ($catgory != 'all' && $catgory != null) {
                 $qb->setParameter('category', $catgory);
@@ -192,13 +222,14 @@ class eventService implements eventServiceInterface {
      * @return      array
      *
      */
-    public function getYearsOfEvents() {
+    public function getYearsOfEvents()
+    {
         $qb = $this->entityManager->getRepository('Event\Entity\Event')
-                ->createQueryBuilder('e')
-                ->select('YEAR(e.eventStartDate) AS eYear')
-                ->where('e.deleted = 0')
-                ->groupBy('eYear')
-                ->orderBy('eYear', 'DESC');
+            ->createQueryBuilder('e')
+            ->select('YEAR(e.eventStartDate) AS eYear')
+            ->where('e.deleted = 0')
+            ->groupBy('eYear')
+            ->orderBy('eYear', 'DESC');
 
         $query = $qb->getQuery();
         $result = $query->getResult();
@@ -207,16 +238,17 @@ class eventService implements eventServiceInterface {
 
     /**
      *
-     * Get array of archived events 
+     * Get array of archived events
      *
      * @return      array
      *
      */
-    public function getArchivedEvents() {
-        $events = $this->entityManager->getRepository(Event::class)
-                ->findBy(['deleted' => 1], ['id' => 'ASC']);
-
-        return $events;
+    public function getArchivedEvents()
+    {
+        $qb = $this->entityManager->getRepository(Event::class)->createQueryBuilder('e')
+            ->where('e.deleted = 1')
+            ->orderBy('e.eventStartDate', 'DESC');
+        return $qb->getQuery();
     }
 
     /**
@@ -227,9 +259,10 @@ class eventService implements eventServiceInterface {
      * @return      object
      *
      */
-    public function getEventById($id) {
+    public function getEventById($id)
+    {
         $event = $this->entityManager->getRepository(Event::class)
-                ->findOneBy(['id' => $id], []);
+            ->findOneBy(['id' => $id], []);
 
         return $event;
     }
@@ -241,7 +274,8 @@ class eventService implements eventServiceInterface {
      * @return      object
      *
      */
-    public function createEvent() {
+    public function createEvent()
+    {
         return new Event();
     }
 
@@ -252,7 +286,8 @@ class eventService implements eventServiceInterface {
      * @return      object
      *
      */
-    public function deleteEvent($event) {
+    public function deleteEvent($event)
+    {
         $this->entityManager->remove($event);
         $this->entityManager->flush();
     }
@@ -266,7 +301,8 @@ class eventService implements eventServiceInterface {
      * @return      void
      *
      */
-    public function setNewEvent($event, $currentUser) {
+    public function setNewEvent($event, $currentUser)
+    {
         $event->setDateCreated(new \DateTime());
         $event->setCreatedBy($currentUser);
 
@@ -282,7 +318,8 @@ class eventService implements eventServiceInterface {
      * @return      void
      *
      */
-    public function setExistingEvent($event, $currentUser) {
+    public function setExistingEvent($event, $currentUser)
+    {
         $event->setDateChanged(new \DateTime());
         $event->setChangedBy($currentUser);
         $this->storeEvent($event);
@@ -297,7 +334,8 @@ class eventService implements eventServiceInterface {
      * @return      void
      *
      */
-    public function archiveEvent($event, $currentUser) {
+    public function archiveEvent($event, $currentUser)
+    {
         $event->setDateDeleted(new \DateTime());
         $event->setDeleted(1);
         $event->setDeletedBy($currentUser);
@@ -314,7 +352,8 @@ class eventService implements eventServiceInterface {
      * @return      void
      *
      */
-    public function unArchiveEvent($event, $currentUser) {
+    public function unArchiveEvent($event, $currentUser)
+    {
         $event->setDeletedBy(NULL);
         $event->setChangedBy($currentUser);
         $event->setDeleted(0);
@@ -332,7 +371,8 @@ class eventService implements eventServiceInterface {
      * @return      void
      *
      */
-    public function storeEvent($event) {
+    public function storeEvent($event)
+    {
         $this->entityManager->persist($event);
         $this->entityManager->flush();
     }
@@ -345,7 +385,8 @@ class eventService implements eventServiceInterface {
      * @return      form
      *
      */
-    public function createEventForm($event) {
+    public function createEventForm($event)
+    {
         $builder = new AnnotationBuilder($this->entityManager);
         $form = $builder->createForm($event);
         $form->setHydrator(new DoctrineHydrator($this->entityManager, 'Event\Entity\Event'));
