@@ -57,12 +57,12 @@ $this->pageBreadcrumbs()->setItems([
                     <td><?php echo $event->getTitle(); ?></td>
                     <td><?php echo(is_object($event->getCategory()) ? $event->getCategory()->getName() : ''); ?></td>
                     <td><?php echo(is_object($event->getEventEndDate()) ? $event->getEventEndDate()->format('d-m-Y H:i:s') : ''); ?></td>
-                    <td class="td-center">
-                        <a class="btn btn-sm btn-secondary" title="Edit" href="
+                    <td class="text-center">
+                        <a class="btn btn-sm btn-secondary" title="Edit event" href="
                        <?= $this->url('beheer/event', ['action' => 'edit', 'id' => $event->getId()]); ?>">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a class="btn btn-sm btn-secondary" title="Archiveer" href="
+                        <a class="btn btn-sm btn-secondary" title="Archiveer event" href="
                        <?= $this->url('beheer/event', ['action' => 'archief', 'id' => $event->getId()]); ?>">
                             <i class="fas fa-archive"></i>
                         </a>
