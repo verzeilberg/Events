@@ -178,7 +178,7 @@ class eventService implements eventServiceInterface
      * @return      object
      *
      */
-    public function getEventsByYearAndCategory($year = null, $catgory = null)
+    public function getEventsByYearAndCategory($year = null, $catgory = null, $array = false)
     {
 
         if ($year != null) {
@@ -187,8 +187,11 @@ class eventService implements eventServiceInterface
                 $endYear = new \DateTime("$year-12-31 23:59:59");
             }
             $qb = $this->entityManager->getRepository('Event\Entity\Event')->createQueryBuilder('e');
-            $qb->select('e')
+            $qb->select('e', 'ei', 'it');
+            $qb->join('e.eventImage', 'ei')
+                ->join('ei.imageTypes', 'it')
                 ->where('e.deleted = 0');
+            //$qb->andWhere('it.imageTypeName like "400x200"');
             if ($year != 'all') {
                 $qb->andWhere('e.eventStartDate >= :beginOfYear')
                     ->andWhere('e.eventEndDate <= :endOfYear');
@@ -207,8 +210,12 @@ class eventService implements eventServiceInterface
             }
 
             $query = $qb->getQuery();
-            $result = $query->getResult();
 
+            if($array) {
+                $result = $query->getArrayResult();
+            } else {
+                $result = $query->getResult();
+            }
             return $result;
         } else {
             return null;
