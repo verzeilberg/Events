@@ -118,8 +118,12 @@ class EventController extends AbstractActionController
                         $imageFiles = $this->cropImageService->resizeAndCropImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/thumb/', 150, 150, '150x150', $image);
                         //Resize image
                         $imageFiles = $this->cropImageService->ResizeImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/resized/', 100, null, 'resized', $image);
-                        //Create 450x300 crop
+                        //Create 400x300 crop
                         $imageFiles = $this->cropImageService->createCropArray('400x200', $folderOriginal, $fileName, 'public/img/userFiles/event/400x200/', 400, 200, $image);
+                        $image = $imageFiles['image'];
+                        $cropImages = $imageFiles['cropImages'];
+                        //Create 800x600 crop
+                        $imageFiles = $this->cropImageService->createCropArray('800x600', $folderOriginal, $fileName, 'public/img/userFiles/event/800x600/', 800, 600, $image, $cropImages);
                         $image = $imageFiles['image'];
                         $cropImages = $imageFiles['cropImages'];
                         //Create return URL
@@ -208,13 +212,16 @@ class EventController extends AbstractActionController
                         $imageFiles = $this->cropImageService->resizeAndCropImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/thumb/', 150, 150, '150x150', $image);
                         //Resize image
                         $imageFiles = $this->cropImageService->ResizeImage('public/' . $folderOriginal . $fileName, 'public/img/userFiles/event/resized/', 100, null, 'resized', $image);
-                        //Create 450x300 crop
+                        //Create 400x300 crop
                         $imageFiles = $this->cropImageService->createCropArray('400x200', $folderOriginal, $fileName, 'public/img/userFiles/event/400x200/', 400, 200, $image);
+                        $image = $imageFiles['image'];
+                        $cropImages = $imageFiles['cropImages'];
+                        //Create 800x600 crop
+                        $imageFiles = $this->cropImageService->createCropArray('800x600', $folderOriginal, $fileName, 'public/img/userFiles/event/800x600/', 800, 600, $image, $cropImages);
                         $image = $imageFiles['image'];
                         $cropImages = $imageFiles['cropImages'];
                         //Create return URL
                         $returnURL = $this->cropImageService->createReturnURL('beheer/event', 'index');
-
                         //Create session container for crop
                         $this->cropImageService->createContainerImages($cropImages, $returnURL);
 

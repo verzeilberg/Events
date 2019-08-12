@@ -1,6 +1,7 @@
 <?php
 $this->headTitle('Edit Event');
 $this->mainMenu()->setActiveItemId('eventbeheer');
+$this->pageBreadcrumbs()->setLayout('beheer');
 $this->pageBreadcrumbs()->setItems([
     'Beheer' => $this->url('beheer'),
     'Events' => $this->url('beheer/event'),
@@ -29,9 +30,9 @@ $form->setAttributes(array(
             echo $this->partial('event/partial/form.phtml', array('form' => $form));
             ?>
             <!-- End event form -->
-            <!-- Image upload -->
-            <?php echo $this->partial('upload-images/partial/upload_image.phtml', array('formImage' => $formEventImage)); ?>
-            <!-- End image upload -->
+            <!-- Show image -->
+            <?php echo $this->partial('event/partial/show_image.phtml', array('formImage' => $formEventImage, 'image' => $image, 'returnURL' => $returnURL)); ?>
+            <!-- End Show image -->
         </div>
     </div>
     <div class="row">
