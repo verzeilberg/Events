@@ -3,7 +3,7 @@
 namespace Event\Factory;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Factory\FactoryInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Event\Controller\EventController;
 use Event\Service\eventService;
 use UploadImages\Service\cropImageService;

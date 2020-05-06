@@ -2,15 +2,15 @@
 
 namespace Event\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
+use Laminas\Mvc\Controller\AbstractActionController;
+use Laminas\View\Model\ViewModel;
+use Laminas\View\Model\JsonModel;
 use Doctrine\ORM\EntityManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
-use Zend\Form\Form;
+use Laminas\Form\Form;
 use Event\Entity\Event;
-use Zend\Session\Container;
+use Laminas\Session\Container;
 use UploadImages\Entity\Image;
 use UploadImages\Entity\ImageType;
 
