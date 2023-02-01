@@ -2,12 +2,13 @@
 
 namespace Event\Controller;
 
+use Event\Form\CreateEventForm;
+use Laminas\Form\Annotation\AnnotationBuilder;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Model\JsonModel;
 use Doctrine\ORM\EntityManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 use Laminas\Form\Form;
 use Event\Entity\Event;
 use Laminas\Session\Container;
@@ -89,8 +90,16 @@ class EventController extends AbstractActionController
         $container = new Container('cropImages');
         $container->getManager()->getStorage()->clear('cropImages');
 
+
+
+        // Create the form and inject the EntityManager
+        $form = new CreateEventForm($this->em);
+        // Create a new, empty entity and bind it to the form
         $event = $this->eventService->createEvent();
-        $form = $this->eventService->createEventForm($event);
+        $form->bind($event);
+
+
+        //$form = $this->eventService->createEventForm($event);
 
         $Image = $this->imageService->createImage();
         $builder = new AnnotationBuilder($this->em);

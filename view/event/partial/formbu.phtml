@@ -1,35 +1,29 @@
-<?php
-$fieldset = $form->get('event');
-$title = $fieldset->get('title');
-?>
-<div class="form-group">
-        <?= $this->formLabel($title) ?>
-        <?= $this->formElement($title) ?>
+<div class="form-group <?php echo(count($form->getMessages('title')) > 0 ? 'has-error' : '') ?>">
+        <?php echo $this->formLabel($form->get('title')); ?>
+        <?php echo $this->formText($form->get('title')); ?>
 </div>
-<?php $eventStartDate = $fieldset->get('eventStartDate'); ?>
-<div class="form-group">
-        <?= $this->formLabel($eventStartDate) ?><br/>
+<div class="form-group <?php echo(count($form->getMessages('eventStartDate')) > 0 ? 'has-error' : '') ?>">
+        <?php echo $this->formLabel($form->get('eventStartDate')->setFormat('Y-m-d H:i')); ?>
         <div class='input-group date' id='datetimepicker1'>
-            <?= $this->formElement($eventStartDate) ?>
+            <?php echo $this->formText($form->get('eventStartDate')); ?>
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
 </div>
-<?php $eventEndDate = $fieldset->get('eventEndDate'); ?>
-<div class="form-group">
-        <?= $this->formLabel($eventEndDate) ?><br/>
+<div class="form-group <?php echo(count($form->getMessages('eventEndDate')) > 0 ? 'has-error' : '') ?>">
+        <?php echo $this->formLabel($form->get('eventEndDate')->setFormat('Y-m-d H:i')); ?><br/>
         <div class='input-group date' id='datetimepicker2'>
-            <?= $this->formElement($eventEndDate) ?>
+
+            <?php echo $this->formText($form->get('eventEndDate')); ?>
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
         </div>
 </div>
-<?php $categories = $fieldset->get('categories'); ?>
-<div class="form-group">
-        <?= $this->formLabel($categories) ?>
-        <?= $this->formElement($categories) ?>
+<div class="form-group <?php echo(count($form->getMessages('category')) > 0 ? 'has-error' : '') ?>">
+        <?php echo $this->formLabel($form->get('category')); ?>
+        <?php echo $this->formSelect($form->get('category')); ?>
 </div>
 <!-- Google maps -->
 <?php

@@ -11,6 +11,7 @@ use Application\Model\UnityOfWork;
  * This class represents a event item.
  * @ORM\Entity()
  * @ORM\Table(name="events")
+ * @Annotation\Hydrator("Laminas\Hydrator\ObjectPropertyHydrator")
  */
 class Event extends UnityOfWork {
 

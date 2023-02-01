@@ -2,10 +2,10 @@
 
 namespace Event\Service;
 
+use Laminas\Form\Annotation\AnnotationBuilder;
 use Laminas\ServiceManager\ServiceLocatorInterface;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
+use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Laminas\Paginator\Paginator;
 
@@ -27,15 +27,11 @@ class eventService implements eventServiceInterface
     }
 
     /**
-     *
      * Get array of events
-     *
      * @return      query
-     *
      */
     public function getEvents()
     {
-
         $qb = $this->entityManager->getRepository(Event::class)->createQueryBuilder('e')
             ->where('e.deleted = 0')
             ->orderBy('e.eventStartDate', 'DESC');
