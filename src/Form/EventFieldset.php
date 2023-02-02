@@ -6,6 +6,9 @@ use Doctrine\Persistence\ObjectManager;
 use Event\Entity\Event;
 use Laminas\Form\Element\Collection;
 use Laminas\Form\Element\Date;
+use Laminas\Form\Element\DateTime;
+use Laminas\Form\Element\DateTimeLocal;
+use Laminas\Form\Element\DateTimeSelect;
 use Laminas\Form\Element\Text;
 use Laminas\Form\Element\Textarea;
 use Laminas\Form\Fieldset;
@@ -21,26 +24,28 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             ->setObject(new Event());
 
         $this->add([
-            'type'  => Date::class,
+            'type'  => DateTimeSelect::class,
             'name' => 'eventStartDate',
             'options' => [
                 'label' => 'Date start',
-                'format' => 'Y-m-d H:i',
+                'format' => 'Y-m-d',
             ],
             'attributes' => [
-                'class' => 'form-control',
+                'class' => 'form-control dateOnline',
+                'readonly' => 'readonly',
             ],
         ]);
 
         $this->add([
-            'type'  => Date::class,
+            'type'  => DateTimeSelect::class,
             'name' => 'eventEndDate',
             'options' => [
                 'label' => 'Date end',
-                'format' => 'Y-m-d H:i',
+                'format' => 'Y-m-d',
             ],
             'attributes' => [
-                'class' => 'form-control',
+                'class' => 'form-control dateOffline',
+                'readonly' => 'readonly',
             ],
         ]);
 
@@ -50,6 +55,9 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             'options' => [
                 'label' => 'Title',
             ],
+            'attributes' => [
+                'class' => 'form-control',
+            ],
         ]);
 
         $this->add([
@@ -58,13 +66,21 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             'options' => [
                 'label' => 'Longitude',
             ],
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'longclicked',
+            ],
         ]);
 
         $this->add([
             'type'  => Text::class,
-            'name' => 'latitude;',
+            'name' => 'latitude',
             'options' => [
-                'label' => 'Latitude;',
+                'label' => 'Latitude',
+            ],
+            'attributes' => [
+                'class' => 'form-control',
+                'id' => 'latclicked',
             ],
         ]);
 
@@ -76,6 +92,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             ],
             'attributes' => [
                 'class' => 'form-control',
+                'id' => 'editor1',
             ],
         ]);
 
@@ -87,6 +104,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             ],
             'attributes' => [
                 'class' => 'form-control',
+                'id' => 'editor2',
             ],
         ]);
 
@@ -103,6 +121,9 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
     public function getInputFilterSpecification()
     {
         return [
+            'title' => [
+                'required' => true,
+            ],
             'categories' => [
                 'required' => false,
             ],

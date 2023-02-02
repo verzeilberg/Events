@@ -24,7 +24,7 @@ class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
         $this->add([
             'name' => 'categories',
             'required' => false,
-            'type' => ObjectMultiCheckbox::class,
+            'type' => ObjectSelect::class,
             'options' => [
                 'object_manager' => $objectManager,
                 'target_class'   => EventCategory::class,
@@ -35,6 +35,9 @@ class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
                 'label_generator' => function ($targetEntity) {
                     return $targetEntity->getName();
                 },
+            ],
+            'attributes' => [
+                'class' => 'form-select',
             ],
         ]);
     }

@@ -2,55 +2,62 @@
 $fieldset = $form->get('event');
 $title = $fieldset->get('title');
 ?>
-<div class="form-group">
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
         <?= $this->formLabel($title) ?>
         <?= $this->formElement($title) ?>
+    </div>
 </div>
 <?php $eventStartDate = $fieldset->get('eventStartDate'); ?>
-<div class="form-group">
-        <?= $this->formLabel($eventStartDate) ?><br/>
-        <div class='input-group date' id='datetimepicker1'>
-            <?= $this->formElement($eventStartDate) ?>
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-calendar"></span>
-            </span>
-        </div>
-</div>
 <?php $eventEndDate = $fieldset->get('eventEndDate'); ?>
-<div class="form-group">
-        <?= $this->formLabel($eventEndDate) ?><br/>
-        <div class='input-group date' id='datetimepicker2'>
-            <?= $this->formElement($eventEndDate) ?>
-            <span class="input-group-addon">
-                <span class="glyphicon glyphicon-calendar"></span>
-            </span>
+<div class="row mb-2">
+    <div class="col-sm-6 col-md-6 col-xl-6">
+        <?= $this->formLabel($eventStartDate) ?>
+        <div class="input-group mb-2 mt-2 date" id='datetimepicker1'>
+            <?= $this->formElement($eventStartDate) ?>
+            <small class="form-text text-danger"> <?= $this->formElementErrors()->render($eventStartDate) ?></small>
         </div>
+    </div>
+    <div class="col-sm-6 col-md-6 col-xl-6">
+        <?= $this->formLabel($eventEndDate) ?>
+        <div class="input-group mb-2 mt-2 date" id='datetimepicker1'>
+            <?= $this->formElement($eventEndDate) ?>
+            <small class="form-text text-danger"> <?= $this->formElementErrors()->render($eventEndDate) ?></small>
+        </div>
+    </div>
 </div>
 <?php $categories = $fieldset->get('categories'); ?>
-<div class="form-group">
-        <?= $this->formLabel($categories) ?>
+<div class="row mb-4">
+    <div class="col-sm-12 col-md-12 col-xl-12">
         <?= $this->formElement($categories) ?>
+    </div>
 </div>
 <!-- Google maps -->
-<?php
-echo $this->partial('event/partial/google_maps.phtml');
-?>
-<div class="row">
-        <div class="input-group">
-        <?php echo $this->formLabel($form->get('longitude')); ?>
-        </div>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?php
+        echo $this->partial('event/partial/google_maps.phtml');
+        $longitude = $fieldset->get('longitude');
+        ?>
+    </div>
 </div>
-<div class="row">
-    <div class="col">
+
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formLabel($longitude) ?>
+    </div>
+</div>
+<div class="row mb-2">
+    <div class="col-sm-6 col-md-6 col-xl-6">
         <label class="sr-only" for="inlineFormInputGroup">Longitude</label>
         <div class="input-group mb-2">
             <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-map-marker-alt"></i></div>
             </div>
-            <?php echo $this->formText($form->get('longitude')); ?>
+            <?= $this->formElement($longitude) ?>
         </div>
     </div>
-    <div class="col">
+    <div class="col-sm-6 col-md-6 col-xl-6">
         <label class="sr-only" for="inlineFormInputGroup">Longitude</label>
         <div class="input-group mb-2">
             <input type="text" class="form-control" id="longmoved" value="" readonly="readonly"/>
@@ -60,22 +67,25 @@ echo $this->partial('event/partial/google_maps.phtml');
         </div>
     </div>
 </div>
-<div class="row">
-        <div class="input-group">
-            <?php echo $this->formLabel($form->get('latitude')); ?>
-        </div>
+<?php
+$latitude = $fieldset->get('latitude');
+?>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formLabel($latitude) ?>
+    </div>
 </div>
-<div class="row">
-    <div class="col">
+<div class="row mb-2">
+    <div class="col-sm-6 col-md-6 col-xl-6">
         <label class="sr-only" for="inlineFormInputGroup">Latitude</label>
         <div class="input-group mb-2">
             <div class="input-group-prepend">
                 <div class="input-group-text"><i class="fas fa-map-marker-alt"></i></div>
             </div>
-            <?php echo $this->formText($form->get('latitude')); ?>
+            <?= $this->formElement($latitude) ?>
         </div>
     </div>
-    <div class="col">
+    <div class="col-sm-6 col-md-6 col-xl-6">
         <label class="sr-only" for="inlineFormInputGroup">Longitude</label>
         <div class="input-group mb-2">
             <input type="text" class="form-control" id="latmoved" value="" readonly="readonly"/>
@@ -85,13 +95,30 @@ echo $this->partial('event/partial/google_maps.phtml');
         </div>
     </div>
 </div>
-<div class="form-group">
-        <?php echo $this->formLabel($form->get('labelText')); ?>
-        <?php echo $this->formTextArea($form->get('labelText')); ?>
+<!-- End Google Maps -->
+<?php
+$labelText = $fieldset->get('labelText');
+?>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formLabel($labelText) ?>
+    </div>
 </div>
-<!-- End google maps -->
-
-<div class="form-group">
-        <?php echo $this->formLabel($form->get('text')); ?>
-        <?php echo $this->formTextArea($form->get('text')); ?>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formElement($labelText) ?>
+    </div>
+</div>
+<?php
+$text = $fieldset->get('text');
+?>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formLabel($text) ?>
+    </div>
+</div>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formElement($text) ?>
+    </div>
 </div>

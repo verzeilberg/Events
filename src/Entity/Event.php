@@ -105,10 +105,10 @@ class Event extends UnityOfWork {
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({
+     * "label": "Categorie",
      * "empty_option": "---",
      * "target_class":"Event\Entity\EventCategory",
      * "property": "name",
-     * "label": "Categorie",
      * "label_attributes": {"class": "control-label"},
      * "find_method":{"name": "findBy","params": {"criteria":{"deleted": "0"},"orderBy":{"name": "ASC"}}}
      * })

@@ -3,6 +3,7 @@
 namespace Event\Controller;
 
 use Event\Form\CreateEventForm;
+use Event\Form\UpdateEventForm;
 use Laminas\Form\Annotation\AnnotationBuilder;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
@@ -81,25 +82,22 @@ class EventController extends AbstractActionController
     public function addAction()
     {
         $this->layout('layout/beheer');
-        $this->viewhelpermanager->get('headScript')->appendFile('/js/dateTimePicker/bootstrap-datetimepicker.min.js');
-        $this->viewhelpermanager->get('headScript')->appendFile('//cdn.ckeditor.com/4.10.0/standard/ckeditor.js');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/events.js');
+        $this->viewhelpermanager->get('headScript')->appendFile('/js/timeshift/timeshift-1.0.js');
+        $this->viewhelpermanager->get('headScript')->appendFile('/js/timeshift/dateshift-1.0.js');
+        $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/timeshift/timeshift-1.0.css');
+        $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/timeshift/dateshift-1.0.css');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/uploadImages.js');
-        $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/dateTimePicker/bootstrap-datetimepicker.css');
         $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/events.css');
+
         $container = new Container('cropImages');
         $container->getManager()->getStorage()->clear('cropImages');
-
-
 
         // Create the form and inject the EntityManager
         $form = new CreateEventForm($this->em);
         // Create a new, empty entity and bind it to the form
         $event = $this->eventService->createEvent();
         $form->bind($event);
-
-
-        //$form = $this->eventService->createEventForm($event);
 
         $Image = $this->imageService->createImage();
         $builder = new AnnotationBuilder($this->em);
@@ -177,11 +175,12 @@ class EventController extends AbstractActionController
     {
         //First include layout, js and css files
         $this->layout('layout/beheer');
-        $this->viewhelpermanager->get('headScript')->appendFile('/js/dateTimePicker/bootstrap-datetimepicker.min.js');
-        $this->viewhelpermanager->get('headScript')->appendFile('//cdn.ckeditor.com/4.10.0/standard/ckeditor.js');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/events.js');
+        $this->viewhelpermanager->get('headScript')->appendFile('/js/timeshift/timeshift-1.0.js');
+        $this->viewhelpermanager->get('headScript')->appendFile('/js/timeshift/dateshift-1.0.js');
+        $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/timeshift/timeshift-1.0.css');
+        $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/timeshift/dateshift-1.0.css');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/uploadImages.js');
-        $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/dateTimePicker/bootstrap-datetimepicker.css');
         $this->viewhelpermanager->get('headLink')->appendStylesheet('/css/events.css');
 
         //Create new container for crop images
@@ -198,17 +197,22 @@ class EventController extends AbstractActionController
             return $this->redirect()->toRoute('beheer/event');
         }
 
-        $form = $this->eventService->createEventForm($event);
+        // Create the form and inject the EntityManager
+        $form = new UpdateEventForm($this->em);
+        // Create a new, empty entity and bind it to the form
+        $form->bind($event);
         $Image = $this->imageService->createImage();
         $formEventImage = $this->imageService->createImageForm($Image);
 
         if ($this->getRequest()->isPost()) {
+
             $form->setData($this->getRequest()->getPost());
             $formEventImage->setData($this->getRequest()->getPost());
             if ($form->isValid() && $formEventImage->isValid()) {
                 //Create image array and set it
                 $imageFile = [];
                 $imageFile = $this->getRequest()->getFiles('image');
+
                 //Upload image
                 if ($imageFile['error'] === 0) {
                     //Upload original file
