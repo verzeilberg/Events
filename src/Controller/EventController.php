@@ -71,7 +71,7 @@ class EventController extends AbstractActionController
         $this->layout('layout/beheer');
         $page = $this->params()->fromQuery('page', 1);
         $query = $this->eventService->getArchivedEvents();
-        $events = $this->eventService->getItemsForPagination($query, $page, 1);
+        $events = $this->eventService->getItemsForPagination($query, $page, 10);
 
 
         return new ViewModel([
@@ -99,20 +99,14 @@ class EventController extends AbstractActionController
         $event = $this->eventService->createEvent();
         $form->bind($event);
 
-        $Image = $this->imageService->createImage();
-        $builder = new AnnotationBuilder($this->em);
-        $formEventImage = $builder->createForm($Image);
-        $formEventImage->setHydrator(new DoctrineHydrator($this->em, 'UploadImages\Entity\Image'));
-        $formEventImage->bind($Image);
-
         if ($this->getRequest()->isPost()) {
             $form->setData($this->getRequest()->getPost());
-            $formEventImage->setData($this->getRequest()->getPost());
-            if ($form->isValid() && $formEventImage->isValid()) {
+            if ($form->isValid()) {
 
                 //Create image array and set it
-                $imageFile = [];
-                $imageFile = $this->getRequest()->getFiles('image');
+                $imageFile = $this->getRequest()->getFiles('upload-image');
+                $imageFile = $imageFile['image']['0'];
+
                 //Upload image
                 if ($imageFile['error'] === 0) {
                     //Upload original file
@@ -284,7 +278,7 @@ class EventController extends AbstractActionController
             return $this->redirect()->toRoute('beheer/event');
         }
         //Set changed date
-        $this->eventService->archiveEvent($event);
+        $this->eventService->archiveEvent($event, $this->currentUser());
         $this->flashMessenger()->addSuccessMessage('Event gearchiveerd');
         return $this->redirect()->toRoute('beheer/event');
     }
@@ -322,7 +316,7 @@ class EventController extends AbstractActionController
 
         //Delete linked images
         $image = $event->getEventImage();
-        if (count($image) > 0) {
+        if (is_object($image)) {
             $this->imageService->deleteImage($image);
         }
         // Remove blog

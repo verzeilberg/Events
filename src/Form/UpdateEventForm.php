@@ -6,6 +6,7 @@ use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Element\Csrf;
 use Laminas\Form\Element\Submit;
 use Laminas\Form\Form;
+use UploadImages\Form\UploadImageFieldset;
 
 class UpdateEventForm extends Form
 {
@@ -20,6 +21,10 @@ class UpdateEventForm extends Form
         $eventFieldset = new EventFieldset($objectManager);
         $eventFieldset->setUseAsBaseFieldset(true);
         $this->add($eventFieldset);
+        // Add the Upload image fieldset, and set it as the base fieldset
+        $uploadImageFieldset = new UploadImageFieldset($objectManager);
+        $uploadImageFieldset->setUseAsBaseFieldset(false);
+        $this->add($uploadImageFieldset);
 
         // Add the Submit button
         $this->add([

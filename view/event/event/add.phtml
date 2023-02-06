@@ -6,15 +6,15 @@
         <div class="col-sm-12 col-md-12 col-xl-12">
             <div class="bg-secondary rounded  p-4">
                 <h2 class="mb-4">Add event</h2>
-                <!-- Blog form -->
+                <!-- Event form -->
                 <?= $this->partial('event/partial/form.phtml', array('form' => $form)); ?>
-                <!-- End blog form -->
+                <!-- End event form -->
             </div>
         </div>
         <div class="col-sm-12 col-md-12 col-xl-12">
             <div class="bg-secondary rounded p-4">
                 <!-- Image upload -->
-                <?php echo $this->partial('upload-images/partial/upload_image.phtml', array('formImage' => $formEventImage)); ?>
+                <?php echo $this->partial('upload-images/partial/upload_image.phtml', array('form' => $form)); ?>
                 <!-- End image upload -->
             </div>
         </div>
