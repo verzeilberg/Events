@@ -5,10 +5,6 @@ namespace Event\Service;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
-
-/*
- * Entities
- */
 use Event\Entity\EventCategory;
 
 class eventCategoryService implements eventCategoryServiceInterface {
