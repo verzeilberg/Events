@@ -8,6 +8,9 @@ $(document).ready(function () {
      * On click show detail modal of a event
      */
     $("#eventItems").on("click", '.eventDetails', function () {
+
+
+
         var eventId = $(this).data('eventid');
         $.ajax({
             type: 'POST',
@@ -169,19 +172,19 @@ function drawEvents(events) {
     $.each(events, function (index, event) {
         var image = _.filter(event.eventImage.imageTypes, {'imageTypeName': '400x200'})[0];
         var eventHtml = '<div id="eventItem' + event.id + '" class="col-sm-12 col-md-6 mb-4 eventItem">';
-        eventHtml += '<div class="card">';
+        eventHtml += '<div class="item">';
         if (moment(event.eventEndDate.date) < moment()) {
             eventHtml += '<img class="finishedStamp img-responsive" src="/img/finished.png" alt="finished" />';
         }
         eventHtml += '<img class="img-responsive eventDetails" data-eventid="' + event.id + '" style="width:100%;" src="' + image.folder + '' + image.fileName + '" alt=""><div class="card-body">';
-        eventHtml += '<h5 class="card-title event-title">' + event.title + '</h5>';
+        eventHtml += '<h4 class="mt-4">' + event.title + '</h4>';
         eventHtml += '<div class="row">';
         eventHtml += '<div class="col-sm-12 col-md-6">';
         eventHtml += '<p class="card-text">';
         eventHtml += ' <i class="fas fa-calendar-alt"></i>&nbsp;' + moment(event.eventStartDate.date).format('DD-MM-YYYY') + '</p>';
         eventHtml += '</div>';
         eventHtml += '<div class="col-sm-12 col-md-6">';
-        eventHtml += '<p class="card-text text-right">';
+        eventHtml += '<p class="card-text text-end">';
         eventHtml += '<i class="far fa-calendar-alt"></i>&nbsp;' + moment(event.eventEndDate.date).format('DD-MM-YYYY') + '</p>';
         eventHtml += '</div>';
         eventHtml += '</div>';
