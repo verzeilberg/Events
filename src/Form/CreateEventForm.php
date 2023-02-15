@@ -25,7 +25,7 @@ class CreateEventForm extends Form
         $this->add($eventFieldset);
         // Add the Upload image fieldset, and set it as the base fieldset
         $uploadImageFieldset = new UploadImageFieldset($objectManager);
-        $uploadImageFieldset->setUseAsBaseFieldset(false);
+        $uploadImageFieldset->setUseAsBaseFieldset(true);
         $this->add($uploadImageFieldset);
 
         // Add the Submit button

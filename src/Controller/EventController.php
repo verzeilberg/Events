@@ -13,12 +13,9 @@ use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 use Laminas\Form\Form;
 use Event\Entity\Event;
 use Laminas\Session\Container;
+use Symfony\Component\VarDumper\VarDumper;
 use UploadImages\Entity\Image;
 use UploadImages\Entity\ImageType;
-
-/*
- * Entities
- */
 
 class EventController extends AbstractActionController
 {
@@ -145,6 +142,10 @@ class EventController extends AbstractActionController
                 }
                 //End upload image
                 //Save Event
+
+                varDumper::dump($this->getRequest()->getPost());
+                VarDumper::dump($event); die;
+
                 $this->eventService->setNewEvent($event, $this->currentUser());
                 $this->flashMessenger()->addSuccessMessage('Event opgeslagen');
 
@@ -160,7 +161,6 @@ class EventController extends AbstractActionController
 
         return new ViewModel([
             'form' => $form,
-            'formEventImage' => $formEventImage,
             'returnURL' => $returnURL
         ]);
     }
