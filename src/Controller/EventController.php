@@ -142,10 +142,6 @@ class EventController extends AbstractActionController
                 }
                 //End upload image
                 //Save Event
-
-                varDumper::dump($this->getRequest()->getPost());
-                VarDumper::dump($event); die;
-
                 $this->eventService->setNewEvent($event, $this->currentUser());
                 $this->flashMessenger()->addSuccessMessage('Event opgeslagen');
 

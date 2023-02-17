@@ -108,14 +108,6 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             ],
         ]);
 
-        $tagFieldset = new CategoryFieldset($objectManager);
-        $this->add([
-            'type'    => Collection::class,
-            'name'    => 'categories',
-            'options' => [
-                'target_element' => $tagFieldset,
-            ],
-        ]);
     }
 
     public function getInputFilterSpecification()

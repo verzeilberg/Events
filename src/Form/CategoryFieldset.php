@@ -22,7 +22,7 @@ class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
             ->setObject(new EventCategory());
 
         $this->add([
-            'name' => 'categories',
+            'name' => 'category',
             'required' => false,
             'type' => ObjectSelect::class,
             'options' => [
