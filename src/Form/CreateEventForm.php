@@ -2,7 +2,6 @@
 
 namespace Event\Form;
 
-use Event\Form\EventFieldset;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 use Doctrine\Persistence\ObjectManager;
 use Laminas\Form\Element\Csrf;
@@ -27,11 +26,6 @@ class CreateEventForm extends Form
         $uploadImageFieldset = new UploadImageFieldset($objectManager);
         $uploadImageFieldset->setUseAsBaseFieldset(false);
         $this->add($uploadImageFieldset);
-        // Add the Upload image fieldset, and set it as the base fieldset
-        $categoryFieldset = new CategoryFieldset($objectManager);
-        $categoryFieldset->setUseAsBaseFieldset(false);
-        $this->add($categoryFieldset);
-
 
         // Add the Submit button
         $this->add([

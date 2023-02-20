@@ -29,7 +29,7 @@ class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
                 'object_manager' => $objectManager,
                 'target_class'   => EventCategory::class,
                 'property'       => 'id',
-                'is_method'      => true,
+                'is_method'      => false,
                 'display_empty_item' => false,
                 'label' => 'Categorieeen',
                 'label_generator' => function ($targetEntity) {

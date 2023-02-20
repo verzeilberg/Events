@@ -101,7 +101,7 @@ class Event extends UnityOfWork {
 
     /**
      * Many Categories have One Event.
-     * @ORM\ManyToOne(targetEntity="EventCategory", inversedBy="events")
+     * @ORM\ManyToOne(targetEntity="EventCategory", inversedBy="events", cascade={"persist"})
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
      * @Annotation\Type("DoctrineModule\Form\Element\ObjectSelect")
      * @Annotation\Options({

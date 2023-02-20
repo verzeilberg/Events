@@ -1,9 +1,12 @@
 <?php
+
 namespace Event\Form;
 
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 use Doctrine\Persistence\ObjectManager;
+use DoctrineModule\Form\Element\ObjectSelect;
 use Event\Entity\Event;
+use Event\Entity\EventCategory;
 use Laminas\Form\Element\Collection;
 use Laminas\Form\Element\Date;
 use Laminas\Form\Element\DateTime;
@@ -24,7 +27,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             ->setObject(new Event());
 
         $this->add([
-            'type'  => DateTimeSelect::class,
+            'type' => DateTimeSelect::class,
             'name' => 'eventStartDate',
             'options' => [
                 'label' => 'Date start',
@@ -37,7 +40,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'  => DateTimeSelect::class,
+            'type' => DateTimeSelect::class,
             'name' => 'eventEndDate',
             'options' => [
                 'label' => 'Date end',
@@ -50,7 +53,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'  => Text::class,
+            'type' => Text::class,
             'name' => 'title',
             'options' => [
                 'label' => 'Title',
@@ -61,7 +64,28 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'  => Text::class,
+            'name' => 'category',
+            'required' => false,
+            'type' => ObjectSelect::class,
+            'options' => [
+                'object_manager' => $objectManager,
+                'target_class' => EventCategory::class,
+                'property' => 'id',
+                'is_method' => true,
+                'display_empty_item' => true,
+                'label' => 'Categorieeen',
+                'label_generator' => function ($targetEntity) {
+                    return $targetEntity->getName();
+                },
+            ],
+            'attributes' => [
+                'class' => 'form-select',
+            ],
+        ]);
+
+
+        $this->add([
+            'type' => Text::class,
             'name' => 'longitude',
             'options' => [
                 'label' => 'Longitude',
@@ -73,7 +97,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'  => Text::class,
+            'type' => Text::class,
             'name' => 'latitude',
             'options' => [
                 'label' => 'Latitude',
@@ -85,7 +109,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'  => Textarea::class,
+            'type' => Textarea::class,
             'name' => 'labelText',
             'options' => [
                 'label' => 'LabelText',
@@ -97,7 +121,7 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
         ]);
 
         $this->add([
-            'type'  => Textarea::class,
+            'type' => Textarea::class,
             'name' => 'text',
             'options' => [
                 'label' => 'Text',
@@ -116,8 +140,8 @@ class EventFieldset extends Fieldset implements InputFilterProviderInterface
             'title' => [
                 'required' => true,
             ],
-            'categories' => [
-                'required' => false,
+            'category' => [
+                'required' => true,
             ],
         ];
     }
