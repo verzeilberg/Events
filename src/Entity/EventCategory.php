@@ -45,7 +45,7 @@ class EventCategory extends UnityOfWork {
 
     /**
      * One Event Category has One File.
-     * @ORM\OneToOne(targetEntity="UploadFiles\Entity\UploadFiles")
+     * @ORM\OneToOne(targetEntity="UploadFiles\Entity\UploadFile")
      * @ORM\JoinColumn(name="file_id", referencedColumnName="id")
      */
     private $file;
