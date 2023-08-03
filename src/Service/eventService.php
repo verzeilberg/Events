@@ -114,7 +114,9 @@ class eventService implements eventServiceInterface
         $query = $qb->getQuery();
         $result = $query->getResult();
 
-        return $result[0];
+
+
+        return isset($result[0]) ?? null;
     }
 
     /**
