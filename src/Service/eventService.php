@@ -8,12 +8,12 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\Laminas\Hydrator\DoctrineObject as DoctrineHydrator;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Laminas\Paginator\Paginator;
-
 /*
  * Entities
  */
 
 use Event\Entity\Event;
+use Symfony\Component\VarDumper\VarDumper;
 
 class eventService implements eventServiceInterface
 {
@@ -114,9 +114,7 @@ class eventService implements eventServiceInterface
         $query = $qb->getQuery();
         $result = $query->getResult();
 
-
-
-        return isset($result[0]) ?? null;
+        return $result[0] ?? null;
     }
 
     /**
@@ -272,13 +270,7 @@ class eventService implements eventServiceInterface
         return $event;
     }
 
-    /**
-     *
-     * Create a new Event object
-     *
-     * @return      object
-     *
-     */
+
     public function createEvent()
     {
         return new Event();

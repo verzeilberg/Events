@@ -116,6 +116,14 @@ class Event extends UnityOfWork {
      */
     private $category;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+    }
+
+
     function getId() {
         return $this->id;
     }

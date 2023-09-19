@@ -3,15 +3,12 @@
         <div class="col-sm-12 col-md-12 col-xl-12">
             <div class="bg-secondary rounded  p-4">
                 <div class="row g-4">
-                    <h2 class="col-sm-12 col-md-12 col-xl-12 mb-4">Events</h2>
+                    <h2 class="col-sm-12 col-md-12 col-xl-12 mb-4">Events archief</h2>
                 </div>
                 <form name="searchEvents" method="post"
                       action="<?php echo $this->url('beheer/event'); ?>">
                     <div class="row g-4">
                         <div class="col-sm-6 col-md-6 col-xl-6">
-                            <a class="btn btn-primary" href="<?= $this->url('beheer/event', ['action' => 'add']); ?>">
-                                <i class="fas fa-plus-square"></i> New Event
-                            </a>
                             <a class="btn btn-primary"
                                href="<?= $this->url('beheer/event'); ?>">
                                 <i class="far fas fa-guitar me-2"></i> Events
@@ -75,11 +72,11 @@
     </div>
     <div class="row g-4">
         <div class="col-sm-12 col-md-12 col-xl-12">
-            <div class="bg-secondary rounded  p-4">
+            <div class="bg-secondary rounded mt-4 p-4">
                 <?= $this->paginationControl($events,
                     'Sliding',
                     'layout/paginator',
-                    array('route' => 'beheer/event')); ?>
+                    array('route' => 'beheer/event', 'action' => 'archive')) ?>
             </div>
         </div>
     </div>

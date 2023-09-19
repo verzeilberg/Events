@@ -2,6 +2,10 @@
 
 namespace Event\Controller;
 
+use Blog\Entity\Blog;
+use Blog\Entity\Cat;
+use Blog\Entity\Comment;
+use Event\Entity\EventCategory;
 use Event\Form\CreateEventForm;
 use Event\Form\UpdateEventForm;
 use Laminas\Form\Annotation\AnnotationBuilder;
@@ -68,8 +72,7 @@ class EventController extends AbstractActionController
         $this->layout('layout/beheer');
         $page = $this->params()->fromQuery('page', 1);
         $query = $this->eventService->getArchivedEvents();
-        $events = $this->eventService->getItemsForPagination($query, $page, 10);
-
+        $events = $this->eventService->getItemsForPagination($query, $page, 1);
 
         return new ViewModel([
             'events' => $events
@@ -94,6 +97,8 @@ class EventController extends AbstractActionController
         $form = new CreateEventForm($this->em);
         // Create a new, empty entity and bind it to the form
         $event = $this->eventService->createEvent();
+
+
         $form->bind($event);
 
         if ($this->getRequest()->isPost()) {
@@ -101,8 +106,7 @@ class EventController extends AbstractActionController
             if ($form->isValid()) {
 
                 //Create image array and set it
-                $imageFile = $this->getRequest()->getFiles('upload-image');
-                $imageFile = $imageFile['image']['0'];
+                $imageFile = $this->getRequest()->getFiles('upload-image')['image'][0];
 
                 //Upload image
                 if ($imageFile['error'] === 0) {
@@ -149,6 +153,10 @@ class EventController extends AbstractActionController
                     return $this->redirect()->toRoute('beheer/images', array('action' => 'crop'));
                 } else {
                     return $this->redirect()->toRoute('beheer/event');
+                }
+            } else {
+                foreach($form->getMessages()['event'] as $message)  {
+                    $this->flashMessenger()->addErrorMessage('Image not uploaded');
                 }
             }
         }
@@ -200,8 +208,7 @@ class EventController extends AbstractActionController
             $formEventImage->setData($this->getRequest()->getPost());
             if ($form->isValid() && $formEventImage->isValid()) {
                 //Create image array and set it
-                $imageFile = [];
-                $imageFile = $this->getRequest()->getFiles('image');
+                $imageFile = $this->getRequest()->getFiles('upload-image')['image'][0];
 
                 //Upload image
                 if ($imageFile['error'] === 0) {

@@ -6,6 +6,10 @@ use Laminas\Router\Http\Literal;
 use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Event\Service\eventServiceInterface;
+use Event\Service\eventService;
+use Event\Service\eventCategoryServiceInterface;
+use Event\Service\eventCategoryService;
 
 return [
     'controllers' => [
@@ -20,8 +24,8 @@ return [
     ],
     'service_manager' => [
         'invokables' => [
-            'Event\Service\eventServiceInterface' => 'Event\Service\eventService',
-            'Event\Service\eventCategoryServiceInterface' => 'Event\Service\eventCategoryService'
+            eventServiceInterface::class => eventService::class,
+            eventCategoryServiceInterface::class => eventCategoryService::class
         ],
     ],
     // The following section is new and should be added to your file

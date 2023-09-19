@@ -9,7 +9,7 @@ use Application\Model\UnityOfWork;
 
 /**
  * 
- * event categoryClub
+ * Event category
  *
  * @ORM\Entity
  * @ORM\Table(name="event_categories")
@@ -57,26 +57,28 @@ class EventCategory extends UnityOfWork {
     private $events;
 
     public function __construct() {
-        $this->events = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->events = new ArrayCollection();
     }
 
-    public function addEvents($events) {
+    public function addEvents($events): void
+    {
         foreach ($events as $event) {
             $this->events->add($event);
         }
     }
 
-    public function removeEvents($events) {
+    public function removeEvents($events): void
+    {
         foreach ($events as $event) {
             $this->events->removeElement($event);
         }
     }
 
-    function getId() {
+    public function getId() {
         return $this->id;
     }
 
-    function getName() {
+    public function getName() {
         return $this->name;
     }
 
