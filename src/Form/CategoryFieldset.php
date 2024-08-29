@@ -32,6 +32,13 @@ class CategoryFieldset extends Fieldset implements InputFilterProviderInterface
                 'is_method'      => false,
                 'display_empty_item' => false,
                 'label' => 'Categorieeen',
+                'find_method'    => array(
+                    'name'   => 'findBy',
+                    'params' => array(
+                        'criteria' => array('deleted' => 0),
+                        'orderBy'  => array('name' => 'ASC'),
+                    ),
+                ),
                 'label_generator' => function ($targetEntity) {
                     return $targetEntity->getName();
                 },

@@ -8,22 +8,34 @@ $title = $fieldset->get('title');
         <?= $this->formElement($title) ?>
     </div>
 </div>
+
 <?php $eventStartDate = $fieldset->get('eventStartDate'); ?>
-<?php $eventEndDate = $fieldset->get('eventEndDate'); ?>
 <div class="row mb-2">
-    <div class="col-sm-6 col-md-6 col-xl-6">
+    <div class="col-md-auto">
         <?= $this->formLabel($eventStartDate) ?>
         <div class="input-group mb-2 mt-2 date" id='datetimepicker1'>
-            <?= $this->formElement($eventStartDate) ?>
+            <?= $this->formText($eventStartDate); ?>
             <small class="form-text text-danger"> <?= $this->formElementErrors()->render($eventStartDate) ?></small>
         </div>
     </div>
-    <div class="col-sm-6 col-md-6 col-xl-6">
+    <?php $eventStartTime = $fieldset->get('eventStartTime'); ?>
+    <div class="col-md-auto">
+        <?= $this->formHidden($eventStartTime) ?>
+    </div>
+</div>
+<?php $eventEndDate = $fieldset->get('eventEndDate'); ?>
+<div class="row mb-2">
+    <div class="col-md-auto">
+
         <?= $this->formLabel($eventEndDate) ?>
-        <div class="input-group mb-2 mt-2 date" id='datetimepicker1'>
-            <?= $this->formElement($eventEndDate) ?>
+        <div class="input-group mb-2 mt-2 date" id='datetimepicker2'>
+            <?= $this->formText($eventEndDate); ?>
             <small class="form-text text-danger"> <?= $this->formElementErrors()->render($eventEndDate) ?></small>
         </div>
+    </div>
+    <?php $eventEndTime = $fieldset->get('eventEndTime'); ?>
+    <div class="col-md-auto">
+        <?= $this->formHidden($eventEndTime); ?>
     </div>
 </div>
 <?php $category = $fieldset->get('category'); ?>
@@ -31,6 +43,7 @@ $title = $fieldset->get('title');
     <div class="col-sm-12 col-md-12 col-xl-12">
         <?= $this->formElement($category) ?>
     </div>
+    <small class="form-text text-danger"> <?= $this->formElementErrors()->render($category) ?></small>
 </div>
 <!-- Google maps -->
 <div class="row mb-2">

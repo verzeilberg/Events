@@ -2,6 +2,7 @@
 
 namespace Event\Controller;
 
+use Event\Form\CreateEventCategoryForm;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Laminas\View\Model\JsonModel;
@@ -11,6 +12,8 @@ use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
 use Laminas\Form\Form;
 use Event\Entity\Event;
 use Laminas\Session\Container;
+use Symfony\Component\VarDumper\VarDumper;
+use UploadFiles\Service\uploadfilesService;
 use UploadImages\Entity\Image;
 use UploadImages\Entity\ImageType;
 
@@ -18,15 +21,17 @@ use UploadImages\Entity\ImageType;
  * Entities
  */
 
-class EventCategoryController extends AbstractActionController {
+class EventCategoryController extends AbstractActionController
+{
 
     protected $vhm;
     protected $em;
     private $viewhelpermanager;
     private $eventCategoryService;
-    private $uploadfilesService;
+    private uploadfilesService $uploadfilesService;
 
-    public function __construct($vhm, $em, $viewhelpermanager, $eventCategoryService, $uploadfilesService) {
+    public function __construct($vhm, $em, $viewhelpermanager, $eventCategoryService, $uploadfilesService)
+    {
         $this->vhm = $vhm;
         $this->em = $em;
         $this->viewhelpermanager = $viewhelpermanager;
@@ -34,23 +39,39 @@ class EventCategoryController extends AbstractActionController {
         $this->uploadfilesService = $uploadfilesService;
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         $this->layout('layout/beheer');
-        $eventCategories = $this->eventCategoryService->getEventCategories();
+        $page = $this->params()->fromQuery('page', 1);
+        $query = $this->eventCategoryService->getEventCategories();
+
+        $searchString = '';
+        if ($this->getRequest()->isPost()) {
+            $searchString = $this->getRequest()->getPost('search');
+            $query = $this->eventCategoryService->searchEventCategorie($searchString);
+        }
+
+        $eventCategories = $this->eventCategoryService->getItemsForPagination($query, $page, 10);
+
         return new ViewModel(
-                array(
-            'eventCategories' => $eventCategories
-                )
+            [
+                'eventCategories' => $eventCategories,
+                'searchString' => $searchString
+            ]
         );
     }
 
-    public function addAction() {
+    public function addAction()
+    {
         $this->layout('layout/beheer');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/upload-files.js');
 
+        // Create the form and inject the EntityManager
+        $form = new CreateEventCategoryForm($this->em);
+        // Create a new, empty entity and bind it to the form
         $eventCategory = $this->eventCategoryService->createEventCategory();
-        $form = $this->eventCategoryService->createEventCategoryForm($eventCategory);
-        $form = $this->uploadfilesService->addFileInputToForm($form);
+        $form->bind($eventCategory);
+
         if ($this->getRequest()->isPost()) {
             $form->setData($this->getRequest()->getPost());
             if ($form->isValid()) {
@@ -82,11 +103,12 @@ class EventCategoryController extends AbstractActionController {
         ]);
     }
 
-    public function editAction() {
+    public function editAction()
+    {
         $this->layout('layout/beheer');
         $this->viewhelpermanager->get('headScript')->appendFile('/js/upload-files.js');
 
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/eventcategories');
         }
@@ -94,8 +116,13 @@ class EventCategoryController extends AbstractActionController {
         if (empty($eventCategory)) {
             return $this->redirect()->toRoute('beheer/eventcategories');
         }
-        $form = $this->eventCategoryService->createEventCategoryForm($eventCategory);
-        $form = $this->uploadfilesService->addFileInputToForm($form);
+
+
+        // Create the form and inject the EntityManager
+        $form = new CreateEventCategoryForm($this->em);
+        // Create a new, empty entity and bind it to the form
+        $form->bind($eventCategory);
+        //$form = $this->uploadfilesService->addFileInputToForm($form);
         if ($this->getRequest()->isPost()) {
             $form->setData($this->getRequest()->getPost());
             if ($form->isValid()) {
@@ -125,21 +152,33 @@ class EventCategoryController extends AbstractActionController {
         ]);
     }
 
-        /**
-     * 
+    /**
+     *
      * Action to show all deleted blogs
      */
-    public function archiveAction() {
+    public function archiveAction()
+    {
         $this->layout('layout/beheer');
-        $eventCategories = $this->eventCategoryService->getArchivedEventCategories();
+        $page = $this->params()->fromQuery('page', 1);
+        $query = $this->eventCategoryService->getArchivedEventCategories();
+
+        $searchString = '';
+        if ($this->getRequest()->isPost()) {
+            $searchString = $this->getRequest()->getPost('search');
+            $query = $this->eventCategoryService->searchEventCategorie($searchString, 1);
+        }
+
+        $eventCategories = $this->eventCategoryService->getItemsForPagination($query, $page, 10);
 
         return new ViewModel([
-            'eventCategories' => $eventCategories
+            'eventCategories' => $eventCategories,
+            'searchString' => $searchString
         ]);
     }
-    
-    public function archiefAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+
+    public function archiefAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/eventcategories');
         }
@@ -147,14 +186,16 @@ class EventCategoryController extends AbstractActionController {
         if (empty($eventCategory)) {
             return $this->redirect()->toRoute('beheer/eventcategories');
         }
+
         //Set changed date
-        $this->eventCategoryService->archiveEventCategory($eventCategory);
+        $this->eventCategoryService->archiveEventCategory($eventCategory, $this->currentUser());
         $this->flashMessenger()->addSuccessMessage('Event categorie gearchiveerd');
         return $this->redirect()->toRoute('beheer/eventcategories');
     }
 
-    public function unArchiefAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+    public function unArchiefAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/eventcategories');
         }
@@ -169,11 +210,12 @@ class EventCategoryController extends AbstractActionController {
     }
 
     /**
-     * 
+     *
      * Action to delete the event from the database and linked images
      */
-    public function deleteAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
+    public function deleteAction()
+    {
+        $id = (int)$this->params()->fromRoute('id', 0);
         if (empty($id)) {
             return $this->redirect()->toRoute('beheer/eventcategories');
         }
@@ -183,13 +225,14 @@ class EventCategoryController extends AbstractActionController {
         }
         //Delete linked file
         $file = $eventCategory->getFile();
-        if (count($file) > 0) {
-            $this->uploadfilesService->deleteFile($file);
+
+        if ($file) {
+            $this->uploadfilesService->removeFile($file->getPath());
         }
         // Remove event category
         $this->eventCategoryService->deleteEventCategory($eventCategory);
         $this->flashMessenger()->addSuccessMessage('Event categorie verwijderd');
-        return $this->redirect()->toRoute('beheer/eventcategories');
+        return $this->redirect()->toRoute('beheer/eventcategories', ['action' => 'archive']);
     }
 
 }

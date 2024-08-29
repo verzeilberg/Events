@@ -9,19 +9,22 @@ $(document).ready(function () {
     });
 
 
-    /**
-     * Init dateshift
-     */
+    /** Init dateshift */
     $(".dateOnline, .dateOffline").dateshift({
         preappelement: '<i class="far fa-calendar-alt"></i>',
         preapp: 'app',
         nextButtonText: '<i class="far fa-caret-square-right"></i>',
         previousButtonText: '<i class="far fa-caret-square-left"></i>',
-        dateFormat: 'dd-mm-yyyy'
+        dateFormat: 'yyyy-mm-dd'
     });
 
-    // Replace the <textarea id="editor1"> with a CKEditor
-    // instance, using default configuration.
+    /** Init timeshift */
+    $("#timeOnline, #timeOffline").timeshift({
+        hourClock: 24
+    });
+
+    /** Replace the <textarea id="editor1"> with a CKEditor
+    instance, using default configuration. */
     CKEDITOR.replace('editor1');
     CKEDITOR.replace('editor2');
 

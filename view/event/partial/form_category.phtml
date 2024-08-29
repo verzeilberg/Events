@@ -1,20 +1,29 @@
-<div class="form-group <?php echo (count($form->getMessages('name')) > 0 ? 'has-error' : '' ) ?>">
-    <div class="col-sm-6 col-md-6 col-lg-6">
-        <?php echo $this->formLabel($form->get('name')); ?>
-        <?php echo $this->formText($form->get('name')); ?>
+<?php
+$fieldset = $form->get('event-category-fieldset');
+?>
+<?php
+$name = $fieldset->get('name');
+?>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formLabel($name) ?>
     </div>
 </div>
-
-<div class="form-group <?php echo (count($form->getMessages('description')) > 0 ? 'has-error' : '' ) ?>">
-    <div class="col-sm-6 col-md-6 col-lg-6">
-        <?php echo $this->formLabel($form->get('description')); ?>
-        <?php echo $this->formTextArea($form->get('description')); ?>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formElement($name) ?>
     </div>
 </div>
 <?php
-if(is_object($eventCategory) && is_object($eventCategory->getFile())){
-    echo '<img src="/' . $eventCategory->getFile()->getPath() . '" alt="bla" width="250" height="auto" />';
-} else {
-echo $this->partial('upload-files/partial/upload_form.phtml', array('form' => $form));
-}
+$description = $fieldset->get('description');
 ?>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formLabel($description) ?>
+    </div>
+</div>
+<div class="row mb-2">
+    <div class="col-sm-12 col-md-12 col-xl-12">
+        <?= $this->formElement($description) ?>
+    </div>
+</div>

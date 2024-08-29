@@ -2,10 +2,15 @@
 
 namespace Event\Service;
 
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
+use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
+use Laminas\Paginator\Paginator;
 use Laminas\ServiceManager\ServiceLocatorInterface;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use DoctrineORMModule\Form\Annotation\AnnotationBuilder;
 use Event\Entity\EventCategory;
+use User\View\Helper\CurrentUser;
 
 class eventCategoryService implements eventCategoryServiceInterface {
 
@@ -17,17 +22,47 @@ class eventCategoryService implements eventCategoryServiceInterface {
     }
 
     /**
-     *
-     * Get array of events 
-     *
-     * @return      array
-     *
+     * @return Query
      */
-    public function getEventCategories() {
-        $eventCategories = $this->entityManager->getRepository(EventCategory::class)
-                ->findBy(['deleted' => 0], ['name' => 'DESC']);
+    public function getEventCategories(): \Doctrine\ORM\Query
+    {
+        $qb = $this->entityManager->getRepository(EventCategory::class)->createQueryBuilder('ec')
+            ->where('ec.deleted = 0')
+            ->orderBy('ec.name', 'DESC');
+        return $qb->getQuery();
+    }
 
-        return $eventCategories;
+    /**
+     * @param $searchString
+     * @param int $deleted
+     * @return mixed
+     */
+    public function searchEventCategorie($searchString, $deleted = 0): mixed
+    {
+        $qb = $this->entityManager->getRepository(EventCategory::class)->createQueryBuilder('ec');
+        $orX = $qb->expr()->orX();
+        $orX->add($qb->expr()->like('ec.name', $qb->expr()->literal("%$searchString%")));
+        $orX->add($qb->expr()->like('ec.description', $qb->expr()->literal("%$searchString%")));
+        $qb->where($orX);
+        $qb->andWhere('ec.deleted = :deleted');
+        $qb->orderBy('ec.name', 'DESC');
+        $qb->setParameter('deleted', $deleted);
+        return $qb->getQuery();
+    }
+
+    /**
+     * @param $query
+     * @param $currentPage
+     * @param $itemsPerPage
+     * @return Paginator
+     */
+    public function getItemsForPagination($query, $currentPage = 1, $itemsPerPage = 10): Paginator
+    {
+        $adapter = new DoctrineAdapter(new ORMPaginator($query, false));
+        $paginator = new Paginator($adapter);
+        $paginator->setDefaultItemCountPerPage($itemsPerPage);
+        $paginator->setCurrentPageNumber($currentPage);
+        return $paginator;
     }
 
     public function createEventsArrayForMaps($events) {
@@ -95,7 +130,7 @@ class eventCategoryService implements eventCategoryServiceInterface {
 
             $query = $qb->getQuery();
             $result = $query->getResult();
-            
+
             return $result;
         } else {
             return null;
@@ -110,10 +145,10 @@ class eventCategoryService implements eventCategoryServiceInterface {
      *
      */
     public function getArchivedEventCategories() {
-        $eventCategories = $this->entityManager->getRepository(EventCategory::class)
-                ->findBy(['deleted' => 1], ['id' => 'ASC']);
-
-        return $eventCategories;
+        $qb = $this->entityManager->getRepository(EventCategory::class)->createQueryBuilder('ec')
+            ->where('ec.deleted = 1')
+            ->orderBy('ec.name', 'DESC');
+        return $qb->getQuery();
     }
 
     /**

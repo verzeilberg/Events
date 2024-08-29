@@ -23,7 +23,7 @@ class Event extends UnityOfWork {
     protected $id;
 
     /**
-     * @ORM\Column(name="event_start_date", type="datetime", nullable=false)
+     * @ORM\Column(name="event_start_date", type="date", nullable=false)
      * @Annotation\Options({
      * "label": "Startdatum event",
      * "label_attributes": {"class": "control-label"}
@@ -33,7 +33,7 @@ class Event extends UnityOfWork {
     protected $eventStartDate;
 
     /**
-     * @ORM\Column(name="event_end_date", type="datetime", nullable=false)
+     * @ORM\Column(name="event_end_date", type="date", nullable=false)
      * @Annotation\Options({
      * "label": "Einddatum event",
      * "label_attributes": {"class": "control-label"}
@@ -41,6 +41,24 @@ class Event extends UnityOfWork {
      * @Annotation\Attributes({"class":"form-control", "readonly":"readonly"})
      */
     protected $eventEndDate;
+
+    /**
+     * @ORM\Column(name="event_start_time", type="time", nullable=true)
+     * @Annotation\Options({
+     * "label": "Start tijd event"
+     * })
+     * @Annotation\Attributes({"id":"timeOnline"})
+     */
+    protected $eventStartTime;
+
+    /**
+     * @ORM\Column(name="event_end_time", type="time", nullable=true)
+     * @Annotation\Options({
+     * "label": "Eind tijd event"
+     * })
+     * @Annotation\Attributes({"class":"form-control", "id":"timeOffline", "readonly":"readonly"})
+     */
+    protected $eventEndTime;
 
     /**
      * @ORM\Column(name="title", type="string", length=255, nullable=false)
@@ -195,13 +213,52 @@ class Event extends UnityOfWork {
     function setCategory($category) {
         $this->category = $category;
     }
-    
+
     function getText() {
         return $this->text;
     }
 
     function setText($text) {
         $this->text = $text;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEventStartTime()
+    {
+        if (is_object($this->eventStartTime)) {
+            return $this->eventStartTime->format('H:i:s');
+        }
+
+        return '00:00:00';
+    }
+
+    /**
+     * @param mixed $eventStartTime
+     */
+    public function setEventStartTime($eventStartTime): void
+    {
+        $this->eventStartTime = $eventStartTime;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEventEndTime()
+    {
+        if (is_object($this->eventEndTime)) {
+            return $this->eventEndTime->format('H:i:s');
+        }
+        return '23:59:59';
+    }
+
+    /**
+     * @param mixed $eventEndTime
+     */
+    public function setEventEndTime($eventEndTime): void
+    {
+        $this->eventEndTime = $eventEndTime;
     }
 
 

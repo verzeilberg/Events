@@ -154,10 +154,6 @@ class EventController extends AbstractActionController
                 } else {
                     return $this->redirect()->toRoute('beheer/event');
                 }
-            } else {
-                foreach($form->getMessages()['event'] as $message)  {
-                    $this->flashMessenger()->addErrorMessage('Image not uploaded');
-                }
             }
         }
 
