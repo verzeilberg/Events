@@ -14,9 +14,6 @@ class CreateEventForm extends Form
 {
     public function __construct(ObjectManager $objectManager)
     {
-
-
-
         parent::__construct('create-event-form');
 
         // The form will hydrate an object of type "Blog"
